@@ -1,3 +1,5 @@
 .env
 outputs/*
 !outputs/.gitkeep
+data/*
+!data/.gitkeep

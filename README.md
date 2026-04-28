@@ -1,6 +1,6 @@
 # Creator Crawler
 
-Creator Crawler is a local Go CLI for finding YouTube creators who have made videos about a game. It searches YouTube, fetches video and channel statistics, lightly filters obvious official/media/trailer results, then writes a timestamped CSV sorted by view count.
+Creator Crawler is a local Go CLI for finding YouTube creators who have made videos about a game. It searches YouTube, fetches video and channel statistics, lightly filters obvious official/media/trailer results, and stores results in SQLite.
 
 ## Setup
 
@@ -16,42 +16,65 @@ YOUTUBE_API_KEY=your_api_key_here
 
 ## Usage
 
-```bash
-go run . search "Elden Ring"
-```
+Add a game before searching:
 
 ```bash
-go run . search "Elden Ring" --limit 100
+go run . game add "Elden Ring"
 ```
+
+List tracked games:
 
 ```bash
-go run . search "Elden Ring" --output-dir outputs
+go run . game list
 ```
 
-By default, likely official/media/trailer rows are excluded. To include them with a `filtered_reason` column:
+Search YouTube for an existing game. The default query is the game name:
 
 ```bash
-go run . search "Elden Ring" --include-filtered
+go run . search --game "Elden Ring" --limit 100
 ```
 
-CSV files are written as timestamped files:
+Use a different YouTube query while still tying results to the game:
+
+```bash
+go run . search --game "Elden Ring" --query "Elden Ring gameplay" --limit 100
+```
+
+By default, likely official/media/trailer rows are excluded. To include them with a `filtered_reason` value:
+
+```bash
+go run . search --game "Elden Ring" --include-filtered
+```
+
+The default SQLite database path is:
 
 ```text
-outputs/elden-ring-2026-04-28-153000.csv
+data/creator-crawler.db
 ```
 
-## CSV Fields
+Use a custom database path:
 
-The CSV contains one row per video:
-
-```text
-creator_name, channel_id, channel_url, subscriber_count, video_title, video_id, video_url, view_count, like_count, comment_count, published_at, duration, format, language, filtered_reason, description
+```bash
+go run . search --game "Elden Ring" --db data/custom.db
 ```
+
+## Data Model
+
+The SQLite database stores:
+
+- `games`: games you explicitly choose to track.
+- `search_runs`: each YouTube API search tied to a game.
+- `creators`: YouTube channels.
+- `videos`: YouTube videos, deduped globally by video ID.
+- `search_results`: videos returned for a specific search run.
+- `game_videos`: candidate videos associated with a game.
+
+Searches do not create games automatically. If a game does not exist, the CLI fails with a message showing the `game add` command to run.
 
 ## Notes
 
-- Search uses the exact game name you provide.
+- Search uses the exact query you provide, or the game name if `--query` is omitted.
 - YouTube does not expose a reliable public “tagged game” search field like Twitch categories.
 - Language is left blank when YouTube does not provide language metadata.
 - Shorts are inferred from duration of 60 seconds or less.
-- The `duration` column uses YouTube's ISO 8601 duration format.
+- The `duration` field uses YouTube's ISO 8601 duration format.
