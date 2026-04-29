@@ -3,3 +3,8 @@
 @source "../../internal/server/views/**/*.templ";
 @source "../../internal/server/views/**/*_templ.go";
 @source "../../internal/server/**/*.go";
+
+@source inline("{p,px,py,pt,pr,pb,pl}-{0..24}");
+@source inline("{p,px,py,pt,pr,pb,pl}-{0.5,1.5,2.5,3.5}");
+@source inline("{sm,md,lg,xl,2xl}:{p,px,py,pt,pr,pb,pl}-{0..24}");
+@source inline("{sm,md,lg,xl,2xl}:{p,px,py,pt,pr,pb,pl}-{0.5,1.5,2.5,3.5}");

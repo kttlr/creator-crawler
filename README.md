@@ -107,6 +107,22 @@ Searches do not create games automatically. If a game does not exist, the CLI fa
 
 The web UI uses `templ` components and Tailwind CSS v4. Generated `*_templ.go` files and compiled CSS are committed so users can build without installing extra tools.
 
+For frontend development with automatic templ generation, Tailwind rebuilds, Go server restarts, and browser live reload, run:
+
+```bash
+just dev
+```
+
+Open the live-reload proxy at:
+
+```text
+http://localhost:8090
+```
+
+The underlying app still serves on `http://localhost:8080`.
+
+The first run installs local dev binaries into `.dev-bin/`.
+
 After editing `.templ` files, regenerate them with:
 
 ```bash

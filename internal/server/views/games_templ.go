@@ -41,7 +41,7 @@ func GamesPage(data GamesPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"page-head\"><div><p class=\"eyebrow\">Local creator discovery</p><h1>Tracked games</h1><p class=\"muted\">Create a game record, then run YouTube searches against it.</p></div></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"page-head\"><div><p class=\"eyebrow\"></p><h1>Games</h1><p class=\"muted\">Create a game record, then run YouTube searches against it.</p></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -49,7 +49,7 @@ func GamesPage(data GamesPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"panel split-panel\"><div><h2>Add game</h2><form class=\"inline-form\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label><span>Game name</span> <input name=\"name\" required placeholder=\"Elden Ring\"></label> <button type=\"submit\">Add game</button></form></div></section><section class=\"panel\"><h2>Games</h2>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"panel split-panel\"><div><h2>Add game</h2><form class=\"inline-form\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label><span>Game name</span> <input name=\"name\" required placeholder=\"Elden Ring\"></label> <button class=\"text-sm\" type=\"submit\">Add game</button></form></div></section><section class=\"panel\"><h2>Games</h2>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -59,19 +59,19 @@ func GamesPage(data GamesPageData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"card-grid\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"divide-y divide-gray-200 space-y-4\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, game := range data.Games {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a class=\"game-card\" href=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a class=\"flex justify-between items-center pb-4\" href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var3 templ.SafeURL
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(GamePath(game.ID))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 32, Col: 51}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 32, Col: 80}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
@@ -95,9 +95,9 @@ func GamesPage(data GamesPageData) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var5 string
-					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.VideoCount))
+					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ApprovedCount))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 55}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 58}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -110,13 +110,13 @@ func GamesPage(data GamesPageData) templ.Component {
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(FormatTime(game.LastSearchedAt))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 115}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 118}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</p></div><div class=\"mini-stats\"><span>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</p></div><div class=\"flex gap-2 text-sm\"><span>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

@@ -29,6 +29,8 @@ func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("GET /", s.redirectHome)
+	mux.HandleFunc("GET /creators", s.creators)
+	mux.HandleFunc("GET /creators/{channelID}", s.creatorDetail)
 	mux.HandleFunc("GET /games", s.games)
 	mux.HandleFunc("POST /games", s.createGame)
 	mux.HandleFunc("GET /games/{id}", s.gameDetail)
@@ -67,6 +69,44 @@ func (s *Server) createGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.redirect(w, r, views.GamePath(game.ID))
+}
+
+func (s *Server) creators(w http.ResponseWriter, r *http.Request) {
+	filters := views.CreatorFilters{
+		Query: r.URL.Query().Get("q"),
+		Sort:  firstNonEmpty(r.URL.Query().Get("sort"), "approved"),
+	}
+	creators, err := s.store.ListApprovedCreators(r.Context(), storage.ListApprovedCreatorsOptions{Query: filters.Query, Sort: filters.Sort})
+	if err != nil {
+		s.renderError(w, r, err)
+		return
+	}
+	s.render(w, r, views.CreatorsPage(views.CreatorsPageData{Creators: creators, Filters: filters}))
+}
+
+func (s *Server) creatorDetail(w http.ResponseWriter, r *http.Request) {
+	channelID := strings.TrimSpace(r.PathValue("channelID"))
+	if channelID == "" {
+		http.NotFound(w, r)
+		return
+	}
+
+	creator, found, err := s.store.GetCreator(r.Context(), channelID)
+	if err != nil {
+		s.renderError(w, r, err)
+		return
+	}
+	if !found {
+		http.NotFound(w, r)
+		return
+	}
+	videos, err := s.store.ListCreatorVideos(r.Context(), channelID)
+	if err != nil {
+		s.renderError(w, r, err)
+		return
+	}
+
+	s.render(w, r, views.CreatorDetailPage(views.CreatorDetailData{Creator: creator, Games: groupCreatorVideos(videos)}))
 }
 
 func (s *Server) gameDetail(w http.ResponseWriter, r *http.Request) {
@@ -252,6 +292,21 @@ func (s *Server) renderGamesWithError(w http.ResponseWriter, r *http.Request, me
 		return
 	}
 	s.patch(w, r, views.GamesPage(views.GamesPageData{Games: games, Error: message}), "")
+}
+
+func groupCreatorVideos(videos []storage.CreatorVideo) []views.CreatorGameGroup {
+	groups := make([]views.CreatorGameGroup, 0)
+	indexByGameID := make(map[int64]int)
+	for _, video := range videos {
+		index, ok := indexByGameID[video.GameID]
+		if !ok {
+			index = len(groups)
+			indexByGameID[video.GameID] = index
+			groups = append(groups, views.CreatorGameGroup{GameID: video.GameID, Name: video.GameName})
+		}
+		groups[index].Videos = append(groups[index].Videos, video)
+	}
+	return groups
 }
 
 func (s *Server) render(w http.ResponseWriter, r *http.Request, component templ.Component) {

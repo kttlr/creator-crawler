@@ -7,6 +7,27 @@ type GamesPageData struct {
 	Error string
 }
 
+type CreatorsPageData struct {
+	Creators []storage.CreatorSummary
+	Filters  CreatorFilters
+}
+
+type CreatorDetailData struct {
+	Creator storage.CreatorSummary
+	Games   []CreatorGameGroup
+}
+
+type CreatorGameGroup struct {
+	GameID int64
+	Name   string
+	Videos []storage.CreatorVideo
+}
+
+type CreatorFilters struct {
+	Query string
+	Sort  string
+}
+
 type GameDetailData struct {
 	Game       storage.Game
 	Videos     []storage.GameVideo

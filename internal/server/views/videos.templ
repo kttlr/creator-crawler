@@ -81,8 +81,9 @@ templ VideoRow(video storage.GameVideo) {
 			</form>
 		</td>
 		<td>
-			<a href={ video.ChannelURL } target="_blank" rel="noreferrer">{ video.CreatorName }</a>
+			<a href={ CreatorPath(video.ChannelID) }>{ video.CreatorName }</a>
 			<div class="muted">{ FormatCount(video.SubscriberCount) } subscribers</div>
+			<a class="muted" href={ video.ChannelURL } target="_blank" rel="noreferrer">YouTube channel</a>
 		</td>
 		<td class="video-title">
 			<a href={ video.VideoURL } target="_blank" rel="noreferrer">{ video.VideoTitle }</a>

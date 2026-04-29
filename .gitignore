@@ -4,3 +4,5 @@ outputs/*
 !outputs/.gitkeep
 data/*
 !data/.gitkeep
+tmp/
+.dev-bin/

@@ -4,8 +4,8 @@ templ GamesPage(data GamesPageData) {
 	@Layout("Games") {
 		<section class="page-head">
 			<div>
-				<p class="eyebrow">Local creator discovery</p>
-				<h1>Tracked games</h1>
+				<p class="eyebrow"></p>
+				<h1>Games</h1>
 				<p class="muted">Create a game record, then run YouTube searches against it.</p>
 			</div>
 		</section>
@@ -18,7 +18,7 @@ templ GamesPage(data GamesPageData) {
 						<span>Game name</span>
 						<input name="name" required placeholder="Elden Ring"/>
 					</label>
-					<button type="submit">Add game</button>
+					<button class="text-sm" type="submit">Add game</button>
 				</form>
 			</div>
 		</section>
@@ -27,14 +27,14 @@ templ GamesPage(data GamesPageData) {
 			if len(data.Games) == 0 {
 				<p class="empty">No games tracked yet.</p>
 			} else {
-				<div class="card-grid">
+				<div class="divide-y divide-gray-200 space-y-4">
 					for _, game := range data.Games {
-						<a class="game-card" href={ GamePath(game.ID) }>
+						<a class="flex justify-between items-center pb-4" href={ GamePath(game.ID) }>
 							<div>
 								<h3>{ game.Name }</h3>
-								<p class="muted">{ FormatCount(game.VideoCount) } videos · last searched { FormatTime(game.LastSearchedAt) }</p>
+								<p class="muted">{ FormatCount(game.ApprovedCount) } videos · last searched { FormatTime(game.LastSearchedAt) }</p>
 							</div>
-							<div class="mini-stats">
+							<div class="flex gap-2 text-sm">
 								<span>{ FormatCount(game.CandidateCount) } candidate</span>
 								<span>{ FormatCount(game.ApprovedCount) } approved</span>
 								<span>{ FormatCount(game.ContactedCount) } contacted</span>

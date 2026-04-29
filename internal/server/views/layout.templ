@@ -12,9 +12,10 @@ templ Layout(title string) {
 			<script type="module" src="/static/vendor/datastar.js"></script>
 		</head>
 		<body>
-			<header class="app-header">
+			<header class="flex justify-between px-4 py-2">
 				<a class="brand" href="/games">Creator Crawler</a>
-				<nav>
+				<nav class="flex gap-4">
+					<a href="/creators">Creators</a>
 					<a href="/games">Games</a>
 				</nav>
 			</header>

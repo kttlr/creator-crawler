@@ -75,6 +75,42 @@ type GameVideo struct {
 	LastSeenAt      string
 }
 
+type CreatorSummary struct {
+	ChannelID          string
+	CreatorName        string
+	ChannelURL         string
+	SubscriberCount    int64
+	ApprovedVideoCount int64
+	GameCount          int64
+	TotalViewCount     int64
+	LastSeenAt         string
+}
+
+type CreatorVideo struct {
+	GameID         int64
+	GameName       string
+	VideoID        string
+	Status         string
+	Notes          string
+	VideoTitle     string
+	VideoURL       string
+	ViewCount      int64
+	LikeCount      int64
+	CommentCount   int64
+	PublishedAt    string
+	Duration       string
+	Format         string
+	Language       string
+	FilteredReason string
+	FirstSeenAt    string
+	LastSeenAt     string
+}
+
+type ListApprovedCreatorsOptions struct {
+	Query string
+	Sort  string
+}
+
 type ListGameVideosOptions struct {
 	GameID int64
 	Status string
@@ -357,6 +393,137 @@ func (s *Store) ListGameVideos(ctx context.Context, opts ListGameVideosOptions) 
 	for rows.Next() {
 		var video GameVideo
 		if err := rows.Scan(&video.GameID, &video.VideoID, &video.Status, &video.Notes, &video.CreatorName, &video.ChannelID, &video.ChannelURL, &video.SubscriberCount, &video.VideoTitle, &video.VideoURL, &video.ViewCount, &video.LikeCount, &video.CommentCount, &video.PublishedAt, &video.Duration, &video.Format, &video.Language, &video.FilteredReason, &video.FirstSeenAt, &video.LastSeenAt); err != nil {
+			return nil, err
+		}
+		videos = append(videos, video)
+	}
+
+	return videos, rows.Err()
+}
+
+func (s *Store) ListApprovedCreators(ctx context.Context, opts ListApprovedCreatorsOptions) ([]CreatorSummary, error) {
+	where := []string{"gv.status = 'approved'"}
+	var args []any
+
+	if strings.TrimSpace(opts.Query) != "" {
+		where = append(where, "c.creator_name LIKE ?")
+		args = append(args, "%"+strings.TrimSpace(opts.Query)+"%")
+	}
+
+	orderBy := "approved_video_count DESC, c.subscriber_count DESC"
+	switch opts.Sort {
+	case "subscribers":
+		orderBy = "c.subscriber_count DESC, approved_video_count DESC"
+	case "games":
+		orderBy = "game_count DESC, approved_video_count DESC"
+	case "last_seen":
+		orderBy = "last_seen_at DESC"
+	case "views":
+		orderBy = "total_view_count DESC"
+	}
+
+	query := fmt.Sprintf(`
+		SELECT
+			c.channel_id,
+			c.creator_name,
+			c.channel_url,
+			c.subscriber_count,
+			COUNT(DISTINCT gv.video_id) AS approved_video_count,
+			COUNT(DISTINCT gv.game_id) AS game_count,
+			COALESCE(SUM(v.view_count), 0) AS total_view_count,
+			MAX(gv.last_seen_at) AS last_seen_at
+		FROM creators c
+		JOIN videos v ON v.channel_id = c.channel_id
+		JOIN game_videos gv ON gv.video_id = v.video_id
+		WHERE %s
+		GROUP BY c.channel_id
+		ORDER BY %s
+		LIMIT 500
+	`, strings.Join(where, " AND "), orderBy)
+
+	rows, err := s.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var creators []CreatorSummary
+	for rows.Next() {
+		var creator CreatorSummary
+		if err := rows.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
+			return nil, err
+		}
+		creators = append(creators, creator)
+	}
+
+	return creators, rows.Err()
+}
+
+func (s *Store) GetCreator(ctx context.Context, channelID string) (CreatorSummary, bool, error) {
+	row := s.db.QueryRowContext(ctx, `
+		SELECT
+			c.channel_id,
+			c.creator_name,
+			c.channel_url,
+			c.subscriber_count,
+			COUNT(DISTINCT CASE WHEN gv.status = 'approved' THEN gv.video_id END) AS approved_video_count,
+			COUNT(DISTINCT gv.game_id) AS game_count,
+			COALESCE(SUM(CASE WHEN gv.status = 'approved' THEN v.view_count ELSE 0 END), 0) AS total_view_count,
+			COALESCE(MAX(gv.last_seen_at), '') AS last_seen_at
+		FROM creators c
+		LEFT JOIN videos v ON v.channel_id = c.channel_id
+		LEFT JOIN game_videos gv ON gv.video_id = v.video_id
+		WHERE c.channel_id = ?
+		GROUP BY c.channel_id
+	`, strings.TrimSpace(channelID))
+
+	var creator CreatorSummary
+	if err := row.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return CreatorSummary{}, false, nil
+		}
+		return CreatorSummary{}, false, err
+	}
+
+	return creator, true, nil
+}
+
+func (s *Store) ListCreatorVideos(ctx context.Context, channelID string) ([]CreatorVideo, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			g.id,
+			g.name,
+			v.video_id,
+			gv.status,
+			gv.notes,
+			v.video_title,
+			v.video_url,
+			v.view_count,
+			v.like_count,
+			v.comment_count,
+			COALESCE(v.published_at, ''),
+			v.duration,
+			v.format,
+			v.language,
+			v.filtered_reason,
+			gv.first_seen_at,
+			gv.last_seen_at
+		FROM videos v
+		JOIN game_videos gv ON gv.video_id = v.video_id
+		JOIN games g ON g.id = gv.game_id
+		WHERE v.channel_id = ?
+		ORDER BY g.name COLLATE NOCASE, gv.status = 'approved' DESC, v.view_count DESC
+		LIMIT 1000
+	`, strings.TrimSpace(channelID))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var videos []CreatorVideo
+	for rows.Next() {
+		var video CreatorVideo
+		if err := rows.Scan(&video.GameID, &video.GameName, &video.VideoID, &video.Status, &video.Notes, &video.VideoTitle, &video.VideoURL, &video.ViewCount, &video.LikeCount, &video.CommentCount, &video.PublishedAt, &video.Duration, &video.Format, &video.Language, &video.FilteredReason, &video.FirstSeenAt, &video.LastSeenAt); err != nil {
 			return nil, err
 		}
 		videos = append(videos, video)

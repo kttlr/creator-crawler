@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -17,6 +18,14 @@ func GameVideosPath(id int64) string {
 
 func GameSearchesPath(id int64) string {
 	return GamePath(id) + "/searches"
+}
+
+func CreatorsPath() string {
+	return "/creators"
+}
+
+func CreatorPath(channelID string) string {
+	return CreatorsPath() + "/" + url.PathEscape(channelID)
 }
 
 func VideoStatusPath(gameID int64, videoID string) string {

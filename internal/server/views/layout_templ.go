@@ -42,7 +42,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " · Creator Crawler</title><link rel=\"stylesheet\" href=\"/static/tailwind.css\"><link rel=\"stylesheet\" href=\"/static/app.css\"><script type=\"module\" src=\"/static/vendor/datastar.js\"></script></head><body><header class=\"app-header\"><a class=\"brand\" href=\"/games\">Creator Crawler</a><nav><a href=\"/games\">Games</a></nav></header><main class=\"app-main\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " · Creator Crawler</title><link rel=\"stylesheet\" href=\"/static/tailwind.css\"><link rel=\"stylesheet\" href=\"/static/app.css\"><script type=\"module\" src=\"/static/vendor/datastar.js\"></script></head><body><header class=\"flex justify-between px-4 py-2\"><a class=\"brand\" href=\"/games\">Creator Crawler</a><nav class=\"flex gap-4\"><a href=\"/creators\">Creators</a> <a href=\"/games\">Games</a></nav></header><main class=\"app-main\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -105,7 +105,7 @@ func Alert(kind string, message string) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 30, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 31, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -166,7 +166,7 @@ func StatusBadge(status string) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(StatusLabel(status))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 35, Col: 77}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 36, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
