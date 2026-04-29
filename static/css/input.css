@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@source "../../internal/server/views/**/*.templ";
+@source "../../internal/server/views/**/*_templ.go";
+@source "../../internal/server/**/*.go";

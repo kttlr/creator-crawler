@@ -9,6 +9,7 @@ import (
 
 	"creator-crawler/internal/config"
 	"creator-crawler/internal/model"
+	"creator-crawler/internal/server"
 	"creator-crawler/internal/storage"
 	"creator-crawler/internal/youtube"
 )
@@ -17,17 +18,20 @@ const usage = `Usage:
   creator-crawler game add "Game Name" [--db data/creator-crawler.db]
   creator-crawler game list [--db data/creator-crawler.db]
   creator-crawler search --game "Game Name" [--query "Search Query"] [--limit 100] [--db data/creator-crawler.db] [--include-filtered]
+  creator-crawler serve [--addr localhost:8080] [--db data/creator-crawler.db]
 
 Commands:
   game add    Add a tracked game
   game list   List tracked games
   search      Search YouTube for videos tied to an existing game
+  serve       Start the local web UI
 
 Flags:
   --game string       Existing game to tie search results to
   --query string      YouTube search query (defaults to game name)
   --limit int         Number of videos to fetch before filtering (default 100)
   --db string         SQLite database path (default data/creator-crawler.db)
+  --addr string       HTTP address for serve (default localhost:8080)
   --include-filtered  Include likely official/media/trailer rows with filtered_reason
   --help              Show help
 `
@@ -45,6 +49,11 @@ type searchOptions struct {
 	IncludeFiltered bool
 }
 
+type serveOptions struct {
+	Addr string
+	DB   string
+}
+
 func Run(ctx context.Context, args []string) error {
 	if len(args) == 0 || args[0] == "--help" || args[0] == "-h" {
 		fmt.Print(usage)
@@ -56,9 +65,23 @@ func Run(ctx context.Context, args []string) error {
 		return runGame(ctx, args[1:])
 	case "search":
 		return runSearch(ctx, args[1:])
+	case "serve":
+		return runServe(ctx, args[1:])
 	default:
 		return fmt.Errorf("unknown command %q\n\n%s", args[0], usage)
 	}
+}
+
+func runServe(ctx context.Context, args []string) error {
+	if hasHelp(args) {
+		fmt.Print(usage)
+		return nil
+	}
+	options, err := parseServeOptions(args)
+	if err != nil {
+		return err
+	}
+	return server.Serve(ctx, options.Addr, options.DB)
 }
 
 func runGame(ctx context.Context, args []string) error {
@@ -292,6 +315,44 @@ func readFlagValue(args []string, index int, name string) (string, int, error) {
 		return "", index, fmt.Errorf("%s requires a value", name)
 	}
 	return args[index+1], index + 1, nil
+}
+
+func parseServeOptions(args []string) (serveOptions, error) {
+	options := serveOptions{Addr: "localhost:8080", DB: storage.DefaultDBPath}
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		switch {
+		case arg == "--addr":
+			value, next, err := readFlagValue(args, i, "--addr")
+			if err != nil {
+				return options, err
+			}
+			options.Addr = value
+			i = next
+		case strings.HasPrefix(arg, "--addr="):
+			options.Addr = strings.TrimPrefix(arg, "--addr=")
+		case arg == "--db":
+			value, next, err := readFlagValue(args, i, "--db")
+			if err != nil {
+				return options, err
+			}
+			options.DB = value
+			i = next
+		case strings.HasPrefix(arg, "--db="):
+			options.DB = strings.TrimPrefix(arg, "--db=")
+		case strings.HasPrefix(arg, "--"):
+			return options, fmt.Errorf("unknown flag %q", arg)
+		default:
+			return options, fmt.Errorf("unexpected argument %q", arg)
+		}
+	}
+	if strings.TrimSpace(options.Addr) == "" {
+		return options, errors.New("--addr cannot be blank")
+	}
+	if strings.TrimSpace(options.DB) == "" {
+		return options, errors.New("--db cannot be blank")
+	}
+	return options, nil
 }
 
 func hasHelp(args []string) bool {

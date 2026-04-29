@@ -1,0 +1,87 @@
+package views
+
+import (
+	"creator-crawler/internal/storage"
+	"fmt"
+)
+
+templ GameDetailPage(data GameDetailData) {
+	@Layout(data.Game.Name) {
+		@GameDetailContent(data)
+	}
+}
+
+templ GameDetailContent(data GameDetailData) {
+	<div id="game-content">
+		<section class="page-head">
+			<div>
+				<a class="back-link" href="/games">← Games</a>
+				<p class="eyebrow">Game</p>
+				<h1>{ data.Game.Name }</h1>
+			</div>
+		</section>
+		@Alert("success", data.Notice)
+		@Alert("error", data.Error)
+		<section class="panel">
+			<h2>Run YouTube search</h2>
+			<form class="search-form" data-on:submit={ "@post('" + GameSearchesPath(data.Game.ID) + "', {contentType: 'form'})" } data-indicator="searching">
+				<label>
+					<span>Query</span>
+					<input name="query" value={ data.SearchForm.Query } placeholder={ data.Game.Name }/>
+				</label>
+				<label class="short-field">
+					<span>Limit</span>
+					<input name="limit" type="number" min="1" max="500" value={ fmt.Sprint(data.SearchForm.Limit) }/>
+				</label>
+				<label class="check-field">
+					<input name="include_filtered" type="checkbox" checked?={ data.SearchForm.IncludeFiltered }/>
+					<span>Include likely official/media/trailer results</span>
+				</label>
+				<button type="submit">Run search</button>
+				<span class="muted" data-show="$searching">Searching YouTube…</span>
+			</form>
+		</section>
+		@VideosSection(data.Game, data.Videos, data.Filters)
+		@SearchRunsSection(data.Runs)
+	</div>
+}
+
+templ SearchRunsSection(runs []storage.SearchRun) {
+	<section class="panel">
+		<h2>Recent searches</h2>
+		if len(runs) == 0 {
+			<p class="empty">No searches run yet.</p>
+		} else {
+			<table class="data-table compact">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Query</th>
+						<th>Results</th>
+						<th>Limit</th>
+						<th>Filtered</th>
+						<th>Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, run := range runs {
+						<tr>
+							<td>{ fmt.Sprint(run.ID) }</td>
+							<td>{ run.Query }</td>
+							<td>{ FormatCount(run.ResultCount) }</td>
+							<td>{ FormatCount(run.LimitRequested) }</td>
+							<td>
+								if run.IncludeFiltered {
+									<span>included</span>
+								} else {
+									<span>excluded</span>
+								}
+							</td>
+							<td>{ FormatTime(run.CreatedAt) }</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	</section>
+}

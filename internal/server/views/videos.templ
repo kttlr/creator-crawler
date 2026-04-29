@@ -1,0 +1,107 @@
+package views
+
+import (
+	"creator-crawler/internal/storage"
+)
+
+templ VideosSection(game storage.Game, videos []storage.GameVideo, filters VideoFilters) {
+	<section class="panel" id="videos-section">
+		<div class="section-head">
+			<div>
+				<h2>Videos</h2>
+				<p class="muted">Review candidates and move creators through your outreach workflow.</p>
+			</div>
+		</div>
+		<form class="filter-bar" data-on:change={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" } data-on:input__debounce.300ms={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" }>
+			<label>
+				<span>Status</span>
+				<select name="status">
+					<option value="candidate" selected?={ filters.Status == "candidate" }>Candidate</option>
+					<option value="approved" selected?={ filters.Status == "approved" }>Approved</option>
+					<option value="rejected" selected?={ filters.Status == "rejected" }>Rejected</option>
+					<option value="contacted" selected?={ filters.Status == "contacted" }>Contacted</option>
+					<option value="ignored" selected?={ filters.Status == "ignored" }>Ignored</option>
+					<option value="all" selected?={ filters.Status == "all" }>All</option>
+				</select>
+			</label>
+			<label>
+				<span>Search</span>
+				<input name="q" value={ filters.Query } placeholder="creator or video title"/>
+			</label>
+			<label>
+				<span>Sort</span>
+				<select name="sort">
+					<option value="views" selected?={ filters.Sort == "views" }>Views</option>
+					<option value="subscribers" selected?={ filters.Sort == "subscribers" }>Subscribers</option>
+					<option value="published" selected?={ filters.Sort == "published" }>Published</option>
+					<option value="last_seen" selected?={ filters.Sort == "last_seen" }>Last seen</option>
+				</select>
+			</label>
+		</form>
+		if len(videos) == 0 {
+			<p class="empty">No videos match these filters.</p>
+		} else {
+			<div class="table-wrap">
+				<table class="data-table">
+					<thead>
+						<tr>
+							<th>Status</th>
+							<th>Creator</th>
+							<th>Video</th>
+							<th>Views</th>
+							<th>Format</th>
+							<th>Language</th>
+							<th>Published</th>
+							<th>Notes</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, video := range videos {
+							@VideoRow(video)
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</section>
+}
+
+templ VideoRow(video storage.GameVideo) {
+	<tr id={ "video-row-" + video.VideoID }>
+		<td class="status-cell">
+			@StatusBadge(video.Status)
+			<form class="status-actions" data-on:change={ "@post('" + VideoStatusPath(video.GameID, video.VideoID) + "', {contentType: 'form'})" }>
+				<select name="status">
+					<option value="candidate" selected?={ video.Status == "candidate" }>Candidate</option>
+					<option value="approved" selected?={ video.Status == "approved" }>Approved</option>
+					<option value="rejected" selected?={ video.Status == "rejected" }>Rejected</option>
+					<option value="contacted" selected?={ video.Status == "contacted" }>Contacted</option>
+					<option value="ignored" selected?={ video.Status == "ignored" }>Ignored</option>
+				</select>
+			</form>
+		</td>
+		<td>
+			<a href={ video.ChannelURL } target="_blank" rel="noreferrer">{ video.CreatorName }</a>
+			<div class="muted">{ FormatCount(video.SubscriberCount) } subscribers</div>
+		</td>
+		<td class="video-title">
+			<a href={ video.VideoURL } target="_blank" rel="noreferrer">{ video.VideoTitle }</a>
+			if video.FilteredReason != "" {
+				<div class="muted">Filtered reason: { video.FilteredReason }</div>
+			}
+		</td>
+		<td>
+			<strong>{ FormatCount(video.ViewCount) }</strong>
+			<div class="muted">{ FormatCount(video.LikeCount) } likes · { FormatCount(video.CommentCount) } comments</div>
+		</td>
+		<td>{ video.Format }</td>
+		<td>{ video.Language }</td>
+		<td>{ FormatTime(video.PublishedAt) }</td>
+		<td>
+			<form data-on:change={ "@post('" + VideoNotesPath(video.GameID, video.VideoID) + "', {contentType: 'form'})" }>
+				<textarea name="notes" rows="2" placeholder="Add notes">{ video.Notes }</textarea>
+			</form>
+			<div class="muted">Seen { FormatTime(video.LastSeenAt) }</div>
+		</td>
+	</tr>
+}

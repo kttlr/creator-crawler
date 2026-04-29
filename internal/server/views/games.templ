@@ -1,0 +1,48 @@
+package views
+
+templ GamesPage(data GamesPageData) {
+	@Layout("Games") {
+		<section class="page-head">
+			<div>
+				<p class="eyebrow">Local creator discovery</p>
+				<h1>Tracked games</h1>
+				<p class="muted">Create a game record, then run YouTube searches against it.</p>
+			</div>
+		</section>
+		@Alert("error", data.Error)
+		<section class="panel split-panel">
+			<div>
+				<h2>Add game</h2>
+				<form class="inline-form" data-on:submit="@post('/games', {contentType: 'form'})">
+					<label>
+						<span>Game name</span>
+						<input name="name" required placeholder="Elden Ring"/>
+					</label>
+					<button type="submit">Add game</button>
+				</form>
+			</div>
+		</section>
+		<section class="panel">
+			<h2>Games</h2>
+			if len(data.Games) == 0 {
+				<p class="empty">No games tracked yet.</p>
+			} else {
+				<div class="card-grid">
+					for _, game := range data.Games {
+						<a class="game-card" href={ GamePath(game.ID) }>
+							<div>
+								<h3>{ game.Name }</h3>
+								<p class="muted">{ FormatCount(game.VideoCount) } videos · last searched { FormatTime(game.LastSearchedAt) }</p>
+							</div>
+							<div class="mini-stats">
+								<span>{ FormatCount(game.CandidateCount) } candidate</span>
+								<span>{ FormatCount(game.ApprovedCount) } approved</span>
+								<span>{ FormatCount(game.ContactedCount) } contacted</span>
+							</div>
+						</a>
+					}
+				</div>
+			}
+		</section>
+	}
+}

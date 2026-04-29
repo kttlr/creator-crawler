@@ -1,6 +1,6 @@
 # Creator Crawler
 
-Creator Crawler is a local Go CLI for finding YouTube creators who have made videos about a game. It searches YouTube, fetches video and channel statistics, lightly filters obvious official/media/trailer results, and stores results in SQLite.
+Creator Crawler is a local Go app for finding YouTube creators who have made videos about a game. It searches YouTube, fetches video and channel statistics, lightly filters obvious official/media/trailer results, and stores results in SQLite.
 
 ## Setup
 
@@ -15,6 +15,22 @@ YOUTUBE_API_KEY=your_api_key_here
 ```
 
 ## Usage
+
+Start the local web UI:
+
+```bash
+go run . serve
+```
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+The web UI is served from the local Go binary and uses your local SQLite database. It does not require `YOUTUBE_API_KEY` until you run a YouTube search.
+
+## CLI Usage
 
 Add a game before searching:
 
@@ -58,6 +74,12 @@ Use a custom database path:
 go run . search --game "Elden Ring" --db data/custom.db
 ```
 
+Serve the web UI from a custom address or database:
+
+```bash
+go run . serve --addr localhost:8081 --db data/custom.db
+```
+
 ## Data Model
 
 The SQLite database stores:
@@ -73,8 +95,34 @@ Searches do not create games automatically. If a game does not exist, the CLI fa
 
 ## Notes
 
+- The app binds the web UI to `localhost:8080` by default.
+- Datastar is vendored locally in `static/vendor/`, so the UI does not need a CDN at runtime.
 - Search uses the exact query you provide, or the game name if `--query` is omitted.
 - YouTube does not expose a reliable public “tagged game” search field like Twitch categories.
 - Language is left blank when YouTube does not provide language metadata.
 - Shorts are inferred from duration of 60 seconds or less.
 - The `duration` field uses YouTube's ISO 8601 duration format.
+
+## Development
+
+The web UI uses `templ` components and Tailwind CSS v4. Generated `*_templ.go` files and compiled CSS are committed so users can build without installing extra tools.
+
+After editing `.templ` files, regenerate them with:
+
+```bash
+go install github.com/a-h/templ/cmd/templ@latest
+templ generate
+```
+
+After editing Tailwind classes or `static/css/input.css`, rebuild CSS with:
+
+```bash
+pnpm install
+pnpm build:css
+```
+
+For iterative UI work, run:
+
+```bash
+pnpm watch:css
+```

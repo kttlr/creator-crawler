@@ -1,0 +1,36 @@
+package views
+
+templ Layout(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>{ title } · Creator Crawler</title>
+			<link rel="stylesheet" href="/static/tailwind.css"/>
+			<link rel="stylesheet" href="/static/app.css"/>
+			<script type="module" src="/static/vendor/datastar.js"></script>
+		</head>
+		<body>
+			<header class="app-header">
+				<a class="brand" href="/games">Creator Crawler</a>
+				<nav>
+					<a href="/games">Games</a>
+				</nav>
+			</header>
+			<main class="app-main">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+templ Alert(kind string, message string) {
+	if message != "" {
+		<div class={ "alert alert-" + kind }>{ message }</div>
+	}
+}
+
+templ StatusBadge(status string) {
+	<span class={ "status status-" + StatusLabel(status) }>{ StatusLabel(status) }</span>
+}
