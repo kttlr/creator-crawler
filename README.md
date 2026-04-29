@@ -84,12 +84,20 @@ go run . serve --addr localhost:8081 --db data/custom.db
 
 The SQLite database stores:
 
+- `my_games`: your own games for marketing research.
+- `tags`: reusable Steam-style tags shared across your games and tracked games.
+- `my_game_tags`: tags attached to your own games.
+- `game_tags`: tags attached to tracked games.
+- `my_game_similar_games`: explicit many-to-many links from your games to similar tracked games.
+- `my_game_creators`: explicit many-to-many links from your games to creators, including per-game contacted status.
 - `games`: games you explicitly choose to track.
 - `search_runs`: each YouTube API search tied to a game.
-- `creators`: YouTube channels.
+- `creators`: YouTube channels, with optional saved email addresses.
 - `videos`: YouTube videos, deduped globally by video ID.
 - `search_results`: videos returned for a specific search run.
 - `game_videos`: candidate videos associated with a game.
+
+The My Games view suggests similar tracked games by shared tags and suggests creators from approved/contacted videos on games with matching tags.
 
 Searches do not create games automatically. If a game does not exist, the CLI fails with a message showing the `game add` command to run.
 

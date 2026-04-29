@@ -9,6 +9,60 @@ CREATE TABLE IF NOT EXISTS games (
   updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS my_games (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  slug TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS my_game_tags (
+  my_game_id INTEGER NOT NULL,
+  tag_id INTEGER NOT NULL,
+  PRIMARY KEY (my_game_id, tag_id),
+  FOREIGN KEY (my_game_id) REFERENCES my_games(id),
+  FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+CREATE TABLE IF NOT EXISTS game_tags (
+  game_id INTEGER NOT NULL,
+  tag_id INTEGER NOT NULL,
+  PRIMARY KEY (game_id, tag_id),
+  FOREIGN KEY (game_id) REFERENCES games(id),
+  FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+CREATE TABLE IF NOT EXISTS my_game_similar_games (
+  my_game_id INTEGER NOT NULL,
+  game_id INTEGER NOT NULL,
+  notes TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (my_game_id, game_id),
+  FOREIGN KEY (my_game_id) REFERENCES my_games(id),
+  FOREIGN KEY (game_id) REFERENCES games(id)
+);
+
+CREATE TABLE IF NOT EXISTS my_game_creators (
+  my_game_id INTEGER NOT NULL,
+  channel_id TEXT NOT NULL,
+  notes TEXT NOT NULL DEFAULT '',
+  contacted_at TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (my_game_id, channel_id),
+  FOREIGN KEY (my_game_id) REFERENCES my_games(id),
+  FOREIGN KEY (channel_id) REFERENCES creators(channel_id)
+);
+
 CREATE TABLE IF NOT EXISTS search_runs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   game_id INTEGER NOT NULL,
@@ -23,6 +77,7 @@ CREATE TABLE IF NOT EXISTS creators (
   channel_id TEXT PRIMARY KEY,
   creator_name TEXT NOT NULL,
   channel_url TEXT NOT NULL,
+  email TEXT NOT NULL DEFAULT '',
   subscriber_count INTEGER NOT NULL DEFAULT 0,
   updated_at TEXT NOT NULL
 );
@@ -82,4 +137,16 @@ ON search_results(search_run_id, position);
 
 CREATE INDEX IF NOT EXISTS idx_game_videos_game_status
 ON game_videos(game_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_my_game_tags_tag
+ON my_game_tags(tag_id);
+
+CREATE INDEX IF NOT EXISTS idx_game_tags_tag
+ON game_tags(tag_id);
+
+CREATE INDEX IF NOT EXISTS idx_my_game_similar_games_game
+ON my_game_similar_games(game_id);
+
+CREATE INDEX IF NOT EXISTS idx_my_game_creators_channel
+ON my_game_creators(channel_id);
 `

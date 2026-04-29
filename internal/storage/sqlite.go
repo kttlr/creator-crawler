@@ -42,6 +42,51 @@ type GameSummary struct {
 	LastSearchedAt string
 }
 
+type MyGame struct {
+	ID          int64
+	Name        string
+	Slug        string
+	Description string
+	Notes       string
+	CreatedAt   string
+	UpdatedAt   string
+}
+
+type MyGameSummary struct {
+	MyGame
+	TagCount         int64
+	SimilarGameCount int64
+	CreatorCount     int64
+}
+
+type Tag struct {
+	ID        int64
+	Name      string
+	Slug      string
+	CreatedAt string
+}
+
+type MyGameSimilarGame struct {
+	GameSummary
+	Notes          string
+	CreatedAt      string
+	SharedTagCount int64
+	Explicit       bool
+}
+
+type MyGameCreator struct {
+	CreatorSummary
+	Notes       string
+	ContactedAt string
+	CreatedAt   string
+}
+
+type SuggestedCreator struct {
+	CreatorSummary
+	SharedGameCount int64
+	SharedTagCount  int64
+}
+
 type SearchRun struct {
 	ID              int64
 	GameID          int64
@@ -79,6 +124,7 @@ type CreatorSummary struct {
 	ChannelID          string
 	CreatorName        string
 	ChannelURL         string
+	Email              string
 	SubscriberCount    int64
 	ApprovedVideoCount int64
 	GameCount          int64
@@ -152,7 +198,47 @@ func (s *Store) Close() error {
 }
 
 func (s *Store) Migrate(ctx context.Context) error {
-	_, err := s.db.ExecContext(ctx, schema)
+	if _, err := s.db.ExecContext(ctx, schema); err != nil {
+		return err
+	}
+	if err := s.addColumnIfMissing(ctx, "creators", "email", "TEXT NOT NULL DEFAULT ''"); err != nil {
+		return err
+	}
+	return s.addColumnIfMissing(ctx, "my_game_creators", "contacted_at", "TEXT NOT NULL DEFAULT ''")
+}
+
+func (s *Store) addColumnIfMissing(ctx context.Context, table, column, definition string) error {
+	if table != "creators" && table != "my_game_creators" {
+		return fmt.Errorf("unsupported migration table %q", table)
+	}
+	if column != "email" && column != "contacted_at" {
+		return fmt.Errorf("unsupported migration column %q", column)
+	}
+
+	rows, err := s.db.QueryContext(ctx, "PRAGMA table_info("+table+")")
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var cid int
+		var name, columnType string
+		var notNull int
+		var defaultValue sql.NullString
+		var pk int
+		if err := rows.Scan(&cid, &name, &columnType, &notNull, &defaultValue, &pk); err != nil {
+			return err
+		}
+		if name == column {
+			return rows.Err()
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return err
+	}
+
+	_, err = s.db.ExecContext(ctx, "ALTER TABLE "+table+" ADD COLUMN "+column+" "+definition)
 	return err
 }
 
@@ -181,6 +267,113 @@ func (s *Store) AddGame(ctx context.Context, name string) (Game, error) {
 	}
 
 	return Game{ID: id, Name: name, Slug: slug, CreatedAt: now, UpdatedAt: now}, nil
+}
+
+func (s *Store) AddMyGame(ctx context.Context, name, description, notes string) (MyGame, error) {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return MyGame{}, errors.New("my game name cannot be blank")
+	}
+
+	now := time.Now().UTC().Format(time.RFC3339)
+	slug := slugify(name)
+	result, err := s.db.ExecContext(ctx, `
+		INSERT INTO my_games (name, slug, description, notes, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`, name, slug, strings.TrimSpace(description), strings.TrimSpace(notes), now, now)
+	if err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "constraint") {
+			return MyGame{}, fmt.Errorf("my game %q already exists", name)
+		}
+		return MyGame{}, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return MyGame{}, err
+	}
+
+	return MyGame{ID: id, Name: name, Slug: slug, Description: strings.TrimSpace(description), Notes: strings.TrimSpace(notes), CreatedAt: now, UpdatedAt: now}, nil
+}
+
+func (s *Store) ListMyGameSummaries(ctx context.Context) ([]MyGameSummary, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			mg.id,
+			mg.name,
+			mg.slug,
+			mg.description,
+			mg.notes,
+			mg.created_at,
+			mg.updated_at,
+			COUNT(DISTINCT mgt.tag_id) AS tag_count,
+			COUNT(DISTINCT msg.game_id) AS similar_game_count,
+			COUNT(DISTINCT mgc.channel_id) AS creator_count
+		FROM my_games mg
+		LEFT JOIN my_game_tags mgt ON mgt.my_game_id = mg.id
+		LEFT JOIN my_game_similar_games msg ON msg.my_game_id = mg.id
+		LEFT JOIN my_game_creators mgc ON mgc.my_game_id = mg.id
+		GROUP BY mg.id
+		ORDER BY mg.name COLLATE NOCASE
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var games []MyGameSummary
+	for rows.Next() {
+		var game MyGameSummary
+		if err := rows.Scan(&game.ID, &game.Name, &game.Slug, &game.Description, &game.Notes, &game.CreatedAt, &game.UpdatedAt, &game.TagCount, &game.SimilarGameCount, &game.CreatorCount); err != nil {
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, rows.Err()
+}
+
+func (s *Store) GetMyGame(ctx context.Context, id int64) (MyGame, bool, error) {
+	row := s.db.QueryRowContext(ctx, `
+		SELECT id, name, slug, description, notes, created_at, updated_at
+		FROM my_games
+		WHERE id = ?
+	`, id)
+
+	var game MyGame
+	if err := row.Scan(&game.ID, &game.Name, &game.Slug, &game.Description, &game.Notes, &game.CreatedAt, &game.UpdatedAt); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return MyGame{}, false, nil
+		}
+		return MyGame{}, false, err
+	}
+	return game, true, nil
+}
+
+func (s *Store) UpdateMyGame(ctx context.Context, id int64, name, description, notes string) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return errors.New("my game name cannot be blank")
+	}
+
+	result, err := s.db.ExecContext(ctx, `
+		UPDATE my_games
+		SET name = ?, slug = ?, description = ?, notes = ?, updated_at = ?
+		WHERE id = ?
+	`, name, slugify(name), strings.TrimSpace(description), strings.TrimSpace(notes), time.Now().UTC().Format(time.RFC3339), id)
+	if err != nil {
+		if strings.Contains(strings.ToLower(err.Error()), "constraint") {
+			return fmt.Errorf("my game %q already exists", name)
+		}
+		return err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }
 
 func (s *Store) FindGameByName(ctx context.Context, name string) (Game, bool, error) {
@@ -242,6 +435,285 @@ func (s *Store) ListGames(ctx context.Context) ([]Game, error) {
 	}
 
 	return games, rows.Err()
+}
+
+func (s *Store) ListTagsForMyGame(ctx context.Context, myGameID int64) ([]Tag, error) {
+	return s.listTags(ctx, `
+		SELECT t.id, t.name, t.slug, t.created_at
+		FROM tags t
+		JOIN my_game_tags mgt ON mgt.tag_id = t.id
+		WHERE mgt.my_game_id = ?
+		ORDER BY t.name COLLATE NOCASE
+	`, myGameID)
+}
+
+func (s *Store) ListTagsForGame(ctx context.Context, gameID int64) ([]Tag, error) {
+	return s.listTags(ctx, `
+		SELECT t.id, t.name, t.slug, t.created_at
+		FROM tags t
+		JOIN game_tags gt ON gt.tag_id = t.id
+		WHERE gt.game_id = ?
+		ORDER BY t.name COLLATE NOCASE
+	`, gameID)
+}
+
+func (s *Store) SetMyGameTags(ctx context.Context, myGameID int64, value string) error {
+	return s.setTags(ctx, "my_game_tags", "my_game_id", myGameID, value)
+}
+
+func (s *Store) SetGameTags(ctx context.Context, gameID int64, value string) error {
+	return s.setTags(ctx, "game_tags", "game_id", gameID, value)
+}
+
+func (s *Store) ListMyGameSimilarGames(ctx context.Context, myGameID int64) ([]MyGameSimilarGame, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			g.id,
+			g.name,
+			g.slug,
+			g.created_at,
+			g.updated_at,
+			COALESCE(v.video_count, 0) AS video_count,
+			COALESCE(v.candidate_count, 0) AS candidate_count,
+			COALESCE(v.approved_count, 0) AS approved_count,
+			COALESCE(v.rejected_count, 0) AS rejected_count,
+			COALESCE(v.contacted_count, 0) AS contacted_count,
+			COALESCE(v.ignored_count, 0) AS ignored_count,
+			COALESCE(sr.last_searched_at, '') AS last_searched_at,
+			msg.notes,
+			msg.created_at,
+			(
+				SELECT COUNT(DISTINCT gt.tag_id)
+				FROM game_tags gt
+				JOIN my_game_tags mgt ON mgt.tag_id = gt.tag_id
+				WHERE gt.game_id = g.id AND mgt.my_game_id = msg.my_game_id
+			) AS shared_tag_count
+		FROM my_game_similar_games msg
+		JOIN games g ON g.id = msg.game_id
+		LEFT JOIN (
+			SELECT
+				game_id,
+				COUNT(video_id) AS video_count,
+				SUM(CASE WHEN status = 'candidate' THEN 1 ELSE 0 END) AS candidate_count,
+				SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved_count,
+				SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count,
+				SUM(CASE WHEN status = 'contacted' THEN 1 ELSE 0 END) AS contacted_count,
+				SUM(CASE WHEN status = 'ignored' THEN 1 ELSE 0 END) AS ignored_count
+			FROM game_videos
+			GROUP BY game_id
+		) v ON v.game_id = g.id
+		LEFT JOIN (
+			SELECT game_id, MAX(created_at) AS last_searched_at
+			FROM search_runs
+			GROUP BY game_id
+		) sr ON sr.game_id = g.id
+		WHERE msg.my_game_id = ?
+		ORDER BY shared_tag_count DESC, g.name COLLATE NOCASE
+	`, myGameID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var games []MyGameSimilarGame
+	for rows.Next() {
+		var game MyGameSimilarGame
+		if err := rows.Scan(&game.ID, &game.Name, &game.Slug, &game.GameSummary.CreatedAt, &game.UpdatedAt, &game.VideoCount, &game.CandidateCount, &game.ApprovedCount, &game.RejectedCount, &game.ContactedCount, &game.IgnoredCount, &game.LastSearchedAt, &game.Notes, &game.CreatedAt, &game.SharedTagCount); err != nil {
+			return nil, err
+		}
+		game.Explicit = true
+		games = append(games, game)
+	}
+	return games, rows.Err()
+}
+
+func (s *Store) ListSuggestedGamesForMyGame(ctx context.Context, myGameID int64) ([]MyGameSimilarGame, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			g.id,
+			g.name,
+			g.slug,
+			g.created_at,
+			g.updated_at,
+			COALESCE(v.video_count, 0) AS video_count,
+			COALESCE(v.candidate_count, 0) AS candidate_count,
+			COALESCE(v.approved_count, 0) AS approved_count,
+			COALESCE(v.rejected_count, 0) AS rejected_count,
+			COALESCE(v.contacted_count, 0) AS contacted_count,
+			COALESCE(v.ignored_count, 0) AS ignored_count,
+			COALESCE(sr.last_searched_at, '') AS last_searched_at,
+			COUNT(DISTINCT gt.tag_id) AS shared_tag_count
+		FROM game_tags gt
+		JOIN my_game_tags mgt ON mgt.tag_id = gt.tag_id AND mgt.my_game_id = ?
+		JOIN games g ON g.id = gt.game_id
+		LEFT JOIN my_game_similar_games msg ON msg.my_game_id = mgt.my_game_id AND msg.game_id = g.id
+		LEFT JOIN (
+			SELECT
+				game_id,
+				COUNT(video_id) AS video_count,
+				SUM(CASE WHEN status = 'candidate' THEN 1 ELSE 0 END) AS candidate_count,
+				SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) AS approved_count,
+				SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected_count,
+				SUM(CASE WHEN status = 'contacted' THEN 1 ELSE 0 END) AS contacted_count,
+				SUM(CASE WHEN status = 'ignored' THEN 1 ELSE 0 END) AS ignored_count
+			FROM game_videos
+			GROUP BY game_id
+		) v ON v.game_id = g.id
+		LEFT JOIN (
+			SELECT game_id, MAX(created_at) AS last_searched_at
+			FROM search_runs
+			GROUP BY game_id
+		) sr ON sr.game_id = g.id
+		WHERE msg.game_id IS NULL
+		GROUP BY g.id
+		ORDER BY shared_tag_count DESC, g.name COLLATE NOCASE
+		LIMIT 25
+	`, myGameID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var games []MyGameSimilarGame
+	for rows.Next() {
+		var game MyGameSimilarGame
+		if err := rows.Scan(&game.ID, &game.Name, &game.Slug, &game.GameSummary.CreatedAt, &game.UpdatedAt, &game.VideoCount, &game.CandidateCount, &game.ApprovedCount, &game.RejectedCount, &game.ContactedCount, &game.IgnoredCount, &game.LastSearchedAt, &game.SharedTagCount); err != nil {
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, rows.Err()
+}
+
+func (s *Store) AddSimilarGameToMyGame(ctx context.Context, myGameID, gameID int64, notes string) error {
+	_, err := s.db.ExecContext(ctx, `
+		INSERT INTO my_game_similar_games (my_game_id, game_id, notes, created_at)
+		VALUES (?, ?, ?, ?)
+		ON CONFLICT(my_game_id, game_id) DO UPDATE SET notes = excluded.notes
+	`, myGameID, gameID, strings.TrimSpace(notes), time.Now().UTC().Format(time.RFC3339))
+	return err
+}
+
+func (s *Store) RemoveSimilarGameFromMyGame(ctx context.Context, myGameID, gameID int64) error {
+	_, err := s.db.ExecContext(ctx, `DELETE FROM my_game_similar_games WHERE my_game_id = ? AND game_id = ?`, myGameID, gameID)
+	return err
+}
+
+func (s *Store) ListCreatorsForMyGame(ctx context.Context, myGameID int64) ([]MyGameCreator, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			c.channel_id,
+			c.creator_name,
+			c.channel_url,
+			c.email,
+			c.subscriber_count,
+			COUNT(DISTINCT CASE WHEN gv.status = 'approved' THEN gv.video_id END) AS approved_video_count,
+			COUNT(DISTINCT gv.game_id) AS game_count,
+			COALESCE(SUM(CASE WHEN gv.status = 'approved' THEN v.view_count ELSE 0 END), 0) AS total_view_count,
+			COALESCE(MAX(gv.last_seen_at), '') AS last_seen_at,
+			mgc.notes,
+			mgc.contacted_at,
+			mgc.created_at
+		FROM my_game_creators mgc
+		JOIN creators c ON c.channel_id = mgc.channel_id
+		LEFT JOIN videos v ON v.channel_id = c.channel_id
+		LEFT JOIN game_videos gv ON gv.video_id = v.video_id
+		WHERE mgc.my_game_id = ?
+		GROUP BY c.channel_id
+		ORDER BY c.creator_name COLLATE NOCASE
+	`, myGameID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var creators []MyGameCreator
+	for rows.Next() {
+		var creator MyGameCreator
+		if err := rows.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.Email, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt, &creator.Notes, &creator.ContactedAt, &creator.CreatedAt); err != nil {
+			return nil, err
+		}
+		creators = append(creators, creator)
+	}
+	return creators, rows.Err()
+}
+
+func (s *Store) ListSuggestedCreatorsForMyGame(ctx context.Context, myGameID int64) ([]SuggestedCreator, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT
+			c.channel_id,
+			c.creator_name,
+			c.channel_url,
+			c.email,
+			c.subscriber_count,
+			COUNT(DISTINCT CASE WHEN gv.status = 'approved' THEN gv.video_id END) AS approved_video_count,
+			COUNT(DISTINCT gv.game_id) AS game_count,
+			COALESCE(SUM(CASE WHEN gv.status = 'approved' THEN v.view_count ELSE 0 END), 0) AS total_view_count,
+			COALESCE(MAX(gv.last_seen_at), '') AS last_seen_at,
+			COUNT(DISTINCT gv.game_id) AS shared_game_count,
+			COUNT(DISTINCT gt.tag_id) AS shared_tag_count
+		FROM my_game_tags mgt
+		JOIN game_tags gt ON gt.tag_id = mgt.tag_id
+		JOIN game_videos gv ON gv.game_id = gt.game_id AND gv.status IN ('approved', 'contacted')
+		JOIN videos v ON v.video_id = gv.video_id
+		JOIN creators c ON c.channel_id = v.channel_id
+		LEFT JOIN my_game_creators mgc ON mgc.my_game_id = mgt.my_game_id AND mgc.channel_id = c.channel_id
+		WHERE mgt.my_game_id = ? AND mgc.channel_id IS NULL
+		GROUP BY c.channel_id
+		ORDER BY shared_tag_count DESC, shared_game_count DESC, approved_video_count DESC, c.subscriber_count DESC
+		LIMIT 25
+	`, myGameID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var creators []SuggestedCreator
+	for rows.Next() {
+		var creator SuggestedCreator
+		if err := rows.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.Email, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt, &creator.SharedGameCount, &creator.SharedTagCount); err != nil {
+			return nil, err
+		}
+		creators = append(creators, creator)
+	}
+	return creators, rows.Err()
+}
+
+func (s *Store) AddCreatorToMyGame(ctx context.Context, myGameID int64, channelID, notes string) error {
+	_, err := s.db.ExecContext(ctx, `
+		INSERT INTO my_game_creators (my_game_id, channel_id, notes, contacted_at, created_at)
+		VALUES (?, ?, ?, '', ?)
+		ON CONFLICT(my_game_id, channel_id) DO UPDATE SET notes = excluded.notes
+	`, myGameID, strings.TrimSpace(channelID), strings.TrimSpace(notes), time.Now().UTC().Format(time.RFC3339))
+	return err
+}
+
+func (s *Store) UpdateMyGameCreatorContacted(ctx context.Context, myGameID int64, channelID string, contacted bool) error {
+	contactedAt := ""
+	if contacted {
+		contactedAt = time.Now().UTC().Format(time.RFC3339)
+	}
+	result, err := s.db.ExecContext(ctx, `
+		UPDATE my_game_creators
+		SET contacted_at = ?
+		WHERE my_game_id = ? AND channel_id = ?
+	`, contactedAt, myGameID, strings.TrimSpace(channelID))
+	if err != nil {
+		return err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
+func (s *Store) RemoveCreatorFromMyGame(ctx context.Context, myGameID int64, channelID string) error {
+	_, err := s.db.ExecContext(ctx, `DELETE FROM my_game_creators WHERE my_game_id = ? AND channel_id = ?`, myGameID, strings.TrimSpace(channelID))
+	return err
 }
 
 func (s *Store) ListGameSummaries(ctx context.Context) ([]GameSummary, error) {
@@ -427,6 +899,7 @@ func (s *Store) ListApprovedCreators(ctx context.Context, opts ListApprovedCreat
 			c.channel_id,
 			c.creator_name,
 			c.channel_url,
+			c.email,
 			c.subscriber_count,
 			COUNT(DISTINCT gv.video_id) AS approved_video_count,
 			COUNT(DISTINCT gv.game_id) AS game_count,
@@ -450,7 +923,7 @@ func (s *Store) ListApprovedCreators(ctx context.Context, opts ListApprovedCreat
 	var creators []CreatorSummary
 	for rows.Next() {
 		var creator CreatorSummary
-		if err := rows.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
+		if err := rows.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.Email, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
 			return nil, err
 		}
 		creators = append(creators, creator)
@@ -465,6 +938,7 @@ func (s *Store) GetCreator(ctx context.Context, channelID string) (CreatorSummar
 			c.channel_id,
 			c.creator_name,
 			c.channel_url,
+			c.email,
 			c.subscriber_count,
 			COUNT(DISTINCT CASE WHEN gv.status = 'approved' THEN gv.video_id END) AS approved_video_count,
 			COUNT(DISTINCT gv.game_id) AS game_count,
@@ -478,7 +952,7 @@ func (s *Store) GetCreator(ctx context.Context, channelID string) (CreatorSummar
 	`, strings.TrimSpace(channelID))
 
 	var creator CreatorSummary
-	if err := row.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
+	if err := row.Scan(&creator.ChannelID, &creator.CreatorName, &creator.ChannelURL, &creator.Email, &creator.SubscriberCount, &creator.ApprovedVideoCount, &creator.GameCount, &creator.TotalViewCount, &creator.LastSeenAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return CreatorSummary{}, false, nil
 		}
@@ -486,6 +960,25 @@ func (s *Store) GetCreator(ctx context.Context, channelID string) (CreatorSummar
 	}
 
 	return creator, true, nil
+}
+
+func (s *Store) UpdateCreatorEmail(ctx context.Context, channelID, email string) error {
+	result, err := s.db.ExecContext(ctx, `
+		UPDATE creators
+		SET email = ?, updated_at = ?
+		WHERE channel_id = ?
+	`, strings.TrimSpace(email), time.Now().UTC().Format(time.RFC3339), strings.TrimSpace(channelID))
+	if err != nil {
+		return err
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }
 
 func (s *Store) ListCreatorVideos(ctx context.Context, channelID string) ([]CreatorVideo, error) {
@@ -669,6 +1162,95 @@ func (s *Store) SaveSearchResults(ctx context.Context, game Game, query string, 
 	}
 
 	return searchRunID, nil
+}
+
+func (s *Store) listTags(ctx context.Context, query string, args ...any) ([]Tag, error) {
+	rows, err := s.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tags []Tag
+	for rows.Next() {
+		var tag Tag
+		if err := rows.Scan(&tag.ID, &tag.Name, &tag.Slug, &tag.CreatedAt); err != nil {
+			return nil, err
+		}
+		tags = append(tags, tag)
+	}
+	return tags, rows.Err()
+}
+
+func (s *Store) setTags(ctx context.Context, table, keyColumn string, entityID int64, value string) error {
+	if table != "my_game_tags" && table != "game_tags" {
+		return fmt.Errorf("unsupported tag table %q", table)
+	}
+	if keyColumn != "my_game_id" && keyColumn != "game_id" {
+		return fmt.Errorf("unsupported tag key %q", keyColumn)
+	}
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.ExecContext(ctx, fmt.Sprintf("DELETE FROM %s WHERE %s = ?", table, keyColumn), entityID); err != nil {
+		return err
+	}
+
+	for _, tagName := range parseTags(value) {
+		tagID, err := upsertTag(ctx, tx, tagName)
+		if err != nil {
+			return err
+		}
+		if _, err := tx.ExecContext(ctx, fmt.Sprintf("INSERT OR IGNORE INTO %s (%s, tag_id) VALUES (?, ?)", table, keyColumn), entityID, tagID); err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}
+
+func upsertTag(ctx context.Context, tx *sql.Tx, name string) (int64, error) {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return 0, errors.New("tag name cannot be blank")
+	}
+	slug := slugify(name)
+	now := time.Now().UTC().Format(time.RFC3339)
+	if _, err := tx.ExecContext(ctx, `
+		INSERT INTO tags (name, slug, created_at)
+		VALUES (?, ?, ?)
+		ON CONFLICT(name) DO NOTHING
+	`, name, slug, now); err != nil {
+		return 0, err
+	}
+
+	var id int64
+	if err := tx.QueryRowContext(ctx, `SELECT id FROM tags WHERE name = ? COLLATE NOCASE`, name).Scan(&id); err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+func parseTags(value string) []string {
+	seen := make(map[string]bool)
+	var tags []string
+	for _, part := range strings.Split(value, ",") {
+		tag := strings.TrimSpace(part)
+		if tag == "" {
+			continue
+		}
+		key := strings.ToLower(tag)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		tags = append(tags, tag)
+	}
+	return tags
 }
 
 func boolInt(value bool) int {

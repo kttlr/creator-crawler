@@ -1,6 +1,8 @@
 package views
 
 import (
+	"creator-crawler/internal/storage"
+
 	"fmt"
 	"net/url"
 	"strconv"
@@ -20,12 +22,52 @@ func GameSearchesPath(id int64) string {
 	return GamePath(id) + "/searches"
 }
 
+func GameTagsPath(id int64) string {
+	return GamePath(id) + "/tags"
+}
+
+func MyGamesPath() string {
+	return "/my-games"
+}
+
+func MyGamePath(id int64) string {
+	return MyGamesPath() + "/" + strconv.FormatInt(id, 10)
+}
+
+func MyGameTagsPath(id int64) string {
+	return MyGamePath(id) + "/tags"
+}
+
+func MyGameSimilarGamesPath(id int64) string {
+	return MyGamePath(id) + "/games"
+}
+
+func MyGameSimilarGamePath(id int64, gameID int64) string {
+	return MyGameSimilarGamesPath(id) + "/" + strconv.FormatInt(gameID, 10)
+}
+
+func MyGameCreatorsPath(id int64) string {
+	return MyGamePath(id) + "/creators"
+}
+
+func MyGameCreatorPath(id int64, channelID string) string {
+	return MyGameCreatorsPath(id) + "/" + url.PathEscape(channelID)
+}
+
+func MyGameCreatorContactedPath(id int64, channelID string) string {
+	return MyGameCreatorPath(id, channelID) + "/contacted"
+}
+
 func CreatorsPath() string {
 	return "/creators"
 }
 
 func CreatorPath(channelID string) string {
 	return CreatorsPath() + "/" + url.PathEscape(channelID)
+}
+
+func CreatorEmailPath(channelID string) string {
+	return CreatorPath(channelID) + "/email"
 }
 
 func VideoStatusPath(gameID int64, videoID string) string {
@@ -76,4 +118,12 @@ func StatusLabel(status string) string {
 
 func SearchSummary(count int, dbPath string) string {
 	return fmt.Sprintf("Saved %d videos to %s", count, dbPath)
+}
+
+func TagsValue(tags []storage.Tag) string {
+	values := make([]string, 0, len(tags))
+	for _, tag := range tags {
+		values = append(values, tag.Name)
+	}
+	return strings.Join(values, ", ")
 }

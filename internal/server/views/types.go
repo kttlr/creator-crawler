@@ -7,6 +7,24 @@ type GamesPageData struct {
 	Error string
 }
 
+type MyGamesPageData struct {
+	MyGames []storage.MyGameSummary
+	Error   string
+}
+
+type MyGameDetailData struct {
+	MyGame            storage.MyGame
+	Tags              []storage.Tag
+	SimilarGames      []storage.MyGameSimilarGame
+	SuggestedGames    []storage.MyGameSimilarGame
+	Creators          []storage.MyGameCreator
+	SuggestedCreators []storage.SuggestedCreator
+	AllGames          []storage.Game
+	ApprovedCreators  []storage.CreatorSummary
+	Notice            string
+	Error             string
+}
+
 type CreatorsPageData struct {
 	Creators []storage.CreatorSummary
 	Filters  CreatorFilters
@@ -30,6 +48,7 @@ type CreatorFilters struct {
 
 type GameDetailData struct {
 	Game       storage.Game
+	Tags       []storage.Tag
 	Videos     []storage.GameVideo
 	Runs       []storage.SearchRun
 	Filters    VideoFilters

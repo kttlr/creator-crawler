@@ -33,7 +33,7 @@ func VideosSection(game storage.Game, videos []storage.GameVideo, filters VideoF
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-4 border-2 border-black bg-white p-4\" id=\"videos-section\"><div class=\"mb-4 flex items-end justify-between gap-4\"><div><h2 class=\"mb-1 text-xl font-black uppercase text-black\">Videos</h2><p class=\"text-sm font-medium text-neutral-700\">Review candidates and move creators through your outreach workflow.</p></div></div><form class=\"mb-4 flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch\" data-on:change=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\" id=\"videos-section\"><div class=\"mb-4 flex items-end justify-between gap-4\"><div><h2 class=\"mb-1 text-xl font-black uppercase text-neutral-950\">Videos</h2><p class=\"text-sm font-medium text-neutral-700\">Review candidates and move creators through your outreach workflow.</p></div></div><form class=\"mb-4 flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch\" data-on:change=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -182,7 +182,7 @@ func VideosSection(game storage.Game, videos []storage.GameVideo, filters VideoF
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-black\"><thead><tr class=\"border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"border-r border-black px-3 py-2\">Status</th><th class=\"border-r border-black px-3 py-2\">Creator</th><th class=\"border-r border-black px-3 py-2\">Video</th><th class=\"border-r border-black px-3 py-2\">Views</th><th class=\"border-r border-black px-3 py-2\">Format</th><th class=\"border-r border-black px-3 py-2\">Language</th><th class=\"border-r border-black px-3 py-2\">Published</th><th class=\"px-3 py-2\">Notes</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"border-r border-stone-300 px-3 py-2\">Status</th><th class=\"border-r border-stone-300 px-3 py-2\">Creator</th><th class=\"border-r border-stone-300 px-3 py-2\">Video</th><th class=\"border-r border-stone-300 px-3 py-2\">Views</th><th class=\"border-r border-stone-300 px-3 py-2\">Format</th><th class=\"border-r border-stone-300 px-3 py-2\">Language</th><th class=\"border-r border-stone-300 px-3 py-2\">Published</th><th class=\"px-3 py-2\">Notes</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -226,20 +226,20 @@ func VideoRow(video storage.GameVideo) templ.Component {
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<tr class=\"border-b border-black last:border-b-0 hover:bg-yellow-100\" id=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\" id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("video-row-" + video.VideoID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 70, Col: 104}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 70, Col: 106}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\"><td class=\"min-w-44 border-r border-black px-3 py-2 align-top\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\"><td class=\"min-w-44 border-r border-stone-300 px-3 py-2 align-top\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -260,7 +260,7 @@ func VideoRow(video storage.GameVideo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\"><button class=\"border border-black px-2 py-1 text-left text-xs font-black uppercase\" type=\"submit\" name=\"status\" value=\"candidate\">Candidate</button> <button class=\"border border-black bg-green-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white\" type=\"submit\" name=\"status\" value=\"approved\">Approved</button> <button class=\"border border-black bg-red-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white\" type=\"submit\" name=\"status\" value=\"rejected\">Rejected</button> <button class=\"border border-black bg-blue-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white\" type=\"submit\" name=\"status\" value=\"contacted\">Contacted</button> <button class=\"border border-black bg-neutral-300 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white\" type=\"submit\" name=\"status\" value=\"ignored\">Ignored</button></form></td><td class=\"border-r border-black px-3 py-2 align-top\"><a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "\"><button class=\"border border-neutral-700 bg-stone-50 px-2 py-1 text-left text-xs font-black uppercase text-neutral-950 hover:bg-neutral-900 hover:text-stone-50\" type=\"submit\" name=\"status\" value=\"candidate\">Candidate</button> <button class=\"border border-neutral-700 bg-green-100 px-2 py-1 text-left text-xs font-black uppercase text-neutral-950 hover:bg-neutral-900 hover:text-stone-50\" type=\"submit\" name=\"status\" value=\"approved\">Approved</button> <button class=\"border border-neutral-700 bg-red-100 px-2 py-1 text-left text-xs font-black uppercase text-neutral-950 hover:bg-neutral-900 hover:text-stone-50\" type=\"submit\" name=\"status\" value=\"rejected\">Rejected</button> <button class=\"border border-neutral-700 bg-blue-100 px-2 py-1 text-left text-xs font-black uppercase text-neutral-950 hover:bg-neutral-900 hover:text-stone-50\" type=\"submit\" name=\"status\" value=\"contacted\">Contacted</button> <button class=\"border border-neutral-700 bg-neutral-200 px-2 py-1 text-left text-xs font-black uppercase text-neutral-950 hover:bg-neutral-900 hover:text-stone-50\" type=\"submit\" name=\"status\" value=\"ignored\">Ignored</button></form></td><td class=\"border-r border-stone-300 px-3 py-2 align-top\"><a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -312,7 +312,7 @@ func VideoRow(video storage.GameVideo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" target=\"_blank\" rel=\"noreferrer\">YouTube channel</a></td><td class=\"max-w-[34rem] border-r border-black px-3 py-2 align-top\"><a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" target=\"_blank\" rel=\"noreferrer\">YouTube channel</a></td><td class=\"max-w-[34rem] border-r border-stone-300 px-3 py-2 align-top\"><a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -361,7 +361,7 @@ func VideoRow(video storage.GameVideo) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</td><td class=\"border-r border-black px-3 py-2 align-top\"><strong>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</td><td class=\"border-r border-stone-300 px-3 py-2 align-top\"><strong>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -400,40 +400,40 @@ func VideoRow(video storage.GameVideo) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, " comments</div></td><td class=\"border-r border-black px-3 py-2 align-top\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, " comments</div></td><td class=\"border-r border-stone-300 px-3 py-2 align-top\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(video.Format)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 96, Col: 70}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 96, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</td><td class=\"border-r border-black px-3 py-2 align-top\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</td><td class=\"border-r border-stone-300 px-3 py-2 align-top\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(video.Language)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 97, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 97, Col: 76}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</td><td class=\"border-r border-black px-3 py-2 align-top\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</td><td class=\"border-r border-stone-300 px-3 py-2 align-top\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(FormatTime(video.PublishedAt))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 98, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/videos.templ`, Line: 98, Col: 91}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
