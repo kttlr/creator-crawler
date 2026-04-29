@@ -41,7 +41,7 @@ func GamesPage(data GamesPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"page-head\"><div><p class=\"eyebrow\"></p><h1>Games</h1><p class=\"muted\">Create a game record, then run YouTube searches against it.</p></div></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex flex-col gap-2 border-b-2 border-black pb-4 md:flex-row md:items-end md:justify-between\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-black\">Tracker</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-black md:text-7xl\">Games</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-neutral-700\">Create a game record, then run YouTube searches against it.</p></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -49,123 +49,110 @@ func GamesPage(data GamesPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"panel split-panel\"><div><h2>Add game</h2><form class=\"inline-form\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label><span>Game name</span> <input name=\"name\" required placeholder=\"Elden Ring\"></label> <button class=\"text-sm\" type=\"submit\">Add game</button></form></div></section><section class=\"panel\"><h2>Games</h2>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"mb-4 border-2 border-black bg-white p-4\"><div><h2 class=\"mb-3 text-xl font-black uppercase text-black\">Add game</h2><form class=\"grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label class=\"block\"><span class=\"mb-1 block text-xs font-black uppercase tracking-wide text-black\">Game name</span> <input class=\"w-full border-2 border-black bg-white px-3 py-2 text-black placeholder:text-neutral-500\" name=\"name\" required placeholder=\"Elden Ring\"></label> <button class=\"border-2 border-black bg-black px-4 py-2 text-sm font-black uppercase text-white hover:bg-white hover:text-black\" type=\"submit\">Add game</button></form></div></section><section class=\"border-2 border-black bg-white\"><div class=\"border-b-2 border-black px-4 py-3\"><h2 class=\"text-xl font-black uppercase text-black\">Games</h2></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if len(data.Games) == 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<p class=\"empty\">No games tracked yet.</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<p class=\"p-4 text-sm font-medium text-neutral-700\">No games tracked yet.</p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"divide-y divide-gray-200 space-y-4\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"overflow-x-auto\"><table class=\"min-w-[760px] w-full border-collapse text-left text-sm text-black\"><thead><tr class=\"border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide\"><th class=\"px-4 py-3\">Game</th><th class=\"px-4 py-3\">Candidates</th><th class=\"px-4 py-3\">Approved</th><th class=\"px-4 py-3\">Contacted</th><th class=\"px-4 py-3\">Last searched</th></tr></thead> <tbody>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, game := range data.Games {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a class=\"flex justify-between items-center pb-4\" href=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<tr class=\"border-b border-black last:border-b-0 hover:bg-yellow-100\"><td class=\"px-4 py-3 font-black\"><a class=\"text-black underline decoration-2 underline-offset-4 hover:bg-black hover:text-white\" href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var3 templ.SafeURL
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(GamePath(game.ID))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 32, Col: 80}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 46, Col: 162}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"><div><h3>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(game.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 34, Col: 23}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 46, Col: 176}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</h3><p class=\"muted\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</a></td><td class=\"px-4 py-3\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var5 string
-					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ApprovedCount))
+					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.CandidateCount))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 58}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 47, Col: 65}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " videos · last searched ")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</td><td class=\"px-4 py-3\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var6 string
-					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(FormatTime(game.LastSearchedAt))
+					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ApprovedCount))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 35, Col: 118}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 48, Col: 64}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</p></div><div class=\"flex gap-2 text-sm\"><span>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</td><td class=\"px-4 py-3\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var7 string
-					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.CandidateCount))
+					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ContactedCount))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 38, Col: 48}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 49, Col: 65}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " candidate</span> <span>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</td><td class=\"px-4 py-3 text-neutral-700\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var8 string
-					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ApprovedCount))
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(FormatTime(game.LastSearchedAt))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 39, Col: 47}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 50, Col: 81}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, " approved</span> <span>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var9 string
-					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(game.ContactedCount))
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/games.templ`, Line: 40, Col: 48}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " contacted</span></div></a>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</td></tr>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</tbody></table></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

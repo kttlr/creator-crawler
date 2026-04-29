@@ -7,15 +7,15 @@ import (
 
 templ CreatorsPage(data CreatorsPageData) {
 	@Layout("Creators") {
-		<section class="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+		<section class="mb-6 flex justify-between border-b-2 border-black pb-4">
 			<div>
-				<p class="eyebrow">Approved creators</p>
-				<h1 class="mt-2 text-4xl font-black leading-none tracking-tight text-slate-50 md:text-6xl">Creators</h1>
-				<p class="mt-3 max-w-2xl text-sm text-slate-400">Creators appear here after at least one video has been approved for a tracked game.</p>
+				<p class="text-xs font-black uppercase tracking-[0.18em] text-black">Approved creators</p>
+				<h1 class="mt-1 text-5xl font-black uppercase leading-none tracking-tight text-black md:text-7xl">Creators</h1>
+				<p class="mt-2 max-w-2xl text-sm font-medium text-neutral-700">Creators appear here after at least one video has been approved for a tracked game.</p>
 			</div>
 		</section>
-		<section class="rounded-2xl border border-slate-700/80 bg-slate-900/80 p-4 shadow-2xl shadow-black/20 md:p-5">
-			<form class="mb-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_14rem_auto] md:items-end" method="get" action={ CreatorsPath() }>
+		<section class="mb-4 border-2 border-black bg-white p-4">
+			<form class="mb-4 flex flex-wrap items-end gap-3" method="get" action={ CreatorsPath() }>
 				<label>
 					<span>Search</span>
 					<input name="q" value={ data.Filters.Query } placeholder="creator name"/>
@@ -33,35 +33,33 @@ templ CreatorsPage(data CreatorsPageData) {
 				<button type="submit">Apply</button>
 			</form>
 			if len(data.Creators) == 0 {
-				<div class="rounded-xl border border-dashed border-slate-700 bg-slate-950/60 p-8 text-center text-slate-400">No approved creators match these filters.</div>
+				<p class="text-sm font-medium text-neutral-700">No approved creators match these filters.</p>
 			} else {
-				<div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-					for _, creator := range data.Creators {
-						<a class="group rounded-2xl border border-slate-700 bg-slate-950/50 p-4 text-slate-100 transition hover:-translate-y-0.5 hover:border-sky-300/70 hover:bg-slate-900" href={ CreatorPath(creator.ChannelID) }>
-							<div class="flex items-start justify-between gap-3">
-								<div>
-									<h2 class="text-xl font-extrabold tracking-tight group-hover:text-sky-200">{ creator.CreatorName }</h2>
-									<p class="mt-1 text-sm text-slate-400">{ FormatCount(creator.SubscriberCount) } subscribers</p>
-								</div>
-								<span class="rounded-full bg-emerald-950 px-3 py-1 text-xs font-black uppercase tracking-wide text-emerald-200">approved</span>
-							</div>
-							<div class="mt-5 grid grid-cols-3 gap-2 text-center">
-								<div class="rounded-xl bg-slate-900 p-3">
-									<div class="text-lg font-black">{ FormatCount(creator.ApprovedVideoCount) }</div>
-									<div class="text-xs uppercase tracking-wide text-slate-500">videos</div>
-								</div>
-								<div class="rounded-xl bg-slate-900 p-3">
-									<div class="text-lg font-black">{ FormatCount(creator.GameCount) }</div>
-									<div class="text-xs uppercase tracking-wide text-slate-500">games</div>
-								</div>
-								<div class="rounded-xl bg-slate-900 p-3">
-									<div class="text-lg font-black">{ FormatCount(creator.TotalViewCount) }</div>
-									<div class="text-xs uppercase tracking-wide text-slate-500">views</div>
-								</div>
-							</div>
-							<p class="mt-4 text-xs text-slate-500">Last seen { FormatTime(creator.LastSeenAt) }</p>
-						</a>
-					}
+				<div class="overflow-x-auto">
+					<table class="min-w-[1080px] w-full border-collapse text-left text-sm text-black">
+						<thead>
+							<tr class="border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide text-neutral-700">
+								<th class="border-r border-black px-3 py-2">Creator</th>
+								<th class="border-r border-black px-3 py-2">Subscribers</th>
+								<th class="border-r border-black px-3 py-2">Approved videos</th>
+								<th class="border-r border-black px-3 py-2">Games</th>
+								<th class="border-r border-black px-3 py-2">Views</th>
+								<th class="px-3 py-2">Last seen</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, creator := range data.Creators {
+								<tr class="border-b border-black last:border-b-0 hover:bg-yellow-100">
+									<td class="border-r border-black px-3 py-2"><a href={ CreatorPath(creator.ChannelID) }><strong>{ creator.CreatorName }</strong></a></td>
+									<td class="border-r border-black px-3 py-2">{ FormatCount(creator.SubscriberCount) }</td>
+									<td class="border-r border-black px-3 py-2">{ FormatCount(creator.ApprovedVideoCount) }</td>
+									<td class="border-r border-black px-3 py-2">{ FormatCount(creator.GameCount) }</td>
+									<td class="border-r border-black px-3 py-2">{ FormatCount(creator.TotalViewCount) }</td>
+									<td class="px-3 py-2 text-neutral-700">{ FormatTime(creator.LastSeenAt) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
 				</div>
 			}
 		</section>
@@ -70,39 +68,28 @@ templ CreatorsPage(data CreatorsPageData) {
 
 templ CreatorDetailPage(data CreatorDetailData) {
 	@Layout(data.Creator.CreatorName) {
-		<section class="mb-6">
-			<a class="back-link" href={ CreatorsPath() }>← Creators</a>
-			<div class="rounded-3xl border border-slate-700 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.22),_rgba(15,23,42,0.94)_36rem)] p-5 shadow-2xl shadow-black/25 md:p-8">
-				<p class="eyebrow">Creator</p>
-				<div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+		<section class="mb-6 border-b-2 border-black pb-4">
+			<a class="mb-4 inline-block text-sm font-black uppercase" href={ CreatorsPath() }>← Creators</a>
+			<div>
+				<p class="text-xs font-black uppercase tracking-[0.18em] text-black">Creator</p>
+				<div>
 					<div>
-						<h1 class="text-4xl font-black leading-none tracking-tight text-slate-50 md:text-6xl">{ data.Creator.CreatorName }</h1>
-						<div class="mt-4 flex flex-wrap gap-3 text-sm text-slate-300">
-							<a class="rounded-full border border-sky-300/40 bg-sky-950/50 px-3 py-1.5 font-bold text-sky-200" href={ data.Creator.ChannelURL } target="_blank" rel="noreferrer">Open YouTube channel</a>
-							<span class="rounded-full border border-slate-600 bg-slate-950/50 px-3 py-1.5">{ FormatCount(data.Creator.SubscriberCount) } subscribers</span>
-						</div>
-					</div>
-					<div class="grid grid-cols-3 gap-2 text-center md:min-w-[28rem]">
-						<div class="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-							<div class="text-2xl font-black text-slate-50">{ FormatCount(data.Creator.ApprovedVideoCount) }</div>
-							<div class="text-xs uppercase tracking-wide text-slate-500">approved videos</div>
-						</div>
-						<div class="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-							<div class="text-2xl font-black text-slate-50">{ FormatCount(data.Creator.GameCount) }</div>
-							<div class="text-xs uppercase tracking-wide text-slate-500">games</div>
-						</div>
-						<div class="rounded-2xl border border-slate-700 bg-slate-950/70 p-4">
-							<div class="text-2xl font-black text-slate-50">{ FormatCount(data.Creator.TotalViewCount) }</div>
-							<div class="text-xs uppercase tracking-wide text-slate-500">approved views</div>
+						<h1 class="mt-1 text-5xl font-black uppercase leading-none tracking-tight text-black md:text-7xl">{ data.Creator.CreatorName }</h1>
+						<div class="mt-4 flex flex-wrap gap-2 text-xs font-black uppercase">
+							<a class="border border-black bg-white px-2 py-1" href={ data.Creator.ChannelURL } target="_blank" rel="noreferrer">Open YouTube channel</a>
+							<span class="border border-black bg-white px-2 py-1 text-neutral-700">{ FormatCount(data.Creator.SubscriberCount) } subscribers</span>
+							<span class="border border-black bg-white px-2 py-1 text-neutral-700">{ FormatCount(data.Creator.ApprovedVideoCount) } approved videos</span>
+							<span class="border border-black bg-white px-2 py-1 text-neutral-700">{ FormatCount(data.Creator.GameCount) } games</span>
+							<span class="border border-black bg-white px-2 py-1 text-neutral-700">{ FormatCount(data.Creator.TotalViewCount) } approved views</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 		if len(data.Games) == 0 {
-			<section class="rounded-2xl border border-dashed border-slate-700 bg-slate-900/70 p-8 text-center text-slate-400">No tracked game videos are attached to this creator yet.</section>
+			<section class="mb-4 border-2 border-black bg-white p-4"><p class="text-sm font-medium text-neutral-700">No tracked game videos are attached to this creator yet.</p></section>
 		} else {
-			<div class="space-y-4">
+			<div>
 				for _, game := range data.Games {
 					@CreatorGameSection(game)
 				}
@@ -112,56 +99,54 @@ templ CreatorDetailPage(data CreatorDetailData) {
 }
 
 templ CreatorGameSection(game CreatorGameGroup) {
-	<section class="overflow-hidden rounded-2xl border border-slate-700 bg-slate-900/80 shadow-xl shadow-black/20">
-		<div class="flex flex-col gap-2 border-b border-slate-700 bg-slate-950/60 p-4 md:flex-row md:items-center md:justify-between">
+	<section class="mb-4 border-2 border-black bg-white p-4">
+		<div class="mb-4 flex items-end justify-between gap-4">
 			<div>
-				<a class="text-2xl font-black tracking-tight text-slate-50 hover:text-sky-200" href={ GamePath(game.GameID) }>{ game.Name }</a>
-				<p class="mt-1 text-sm text-slate-400">{ fmt.Sprint(len(game.Videos)) } videos from this creator</p>
+				<h2 class="mb-1 text-xl font-black uppercase text-black"><a href={ GamePath(game.GameID) }>{ game.Name }</a></h2>
+				<p class="text-sm font-medium text-neutral-700">{ fmt.Sprint(len(game.Videos)) } videos from this creator</p>
 			</div>
 		</div>
-		<div class="divide-y divide-slate-800">
-			for _, video := range game.Videos {
-				@CreatorVideoCard(video)
-			}
+		<div class="overflow-x-auto">
+			<table class="min-w-[1080px] w-full border-collapse text-left text-sm text-black">
+				<thead>
+					<tr class="border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide text-neutral-700">
+						<th class="border-r border-black px-3 py-2">Status</th>
+						<th class="border-r border-black px-3 py-2">Video</th>
+						<th class="border-r border-black px-3 py-2">Views</th>
+						<th class="border-r border-black px-3 py-2">Likes / comments</th>
+						<th class="border-r border-black px-3 py-2">Format</th>
+						<th class="border-r border-black px-3 py-2">Language</th>
+						<th class="border-r border-black px-3 py-2">Published</th>
+						<th class="px-3 py-2">Last seen</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, video := range game.Videos {
+						@CreatorVideoRow(video)
+					}
+				</tbody>
+			</table>
 		</div>
 	</section>
 }
 
-templ CreatorVideoCard(video storage.CreatorVideo) {
-	<article class="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_15rem]">
-		<div>
-			<div class="mb-2 flex flex-wrap items-center gap-2">
-				@StatusBadge(video.Status)
-				<span class="text-xs uppercase tracking-wide text-slate-500">{ video.Format }</span>
-				if video.Language != "" {
-					<span class="text-xs uppercase tracking-wide text-slate-500">{ video.Language }</span>
-				}
-			</div>
-			<a class="text-lg font-extrabold text-slate-100 hover:text-sky-200" href={ video.VideoURL } target="_blank" rel="noreferrer">{ video.VideoTitle }</a>
+templ CreatorVideoRow(video storage.CreatorVideo) {
+	<tr class="border-b border-black last:border-b-0 hover:bg-yellow-100">
+		<td class="border-r border-black px-3 py-2">@StatusBadge(video.Status)</td>
+		<td class="max-w-[34rem] border-r border-black px-3 py-2">
+			<a href={ video.VideoURL } target="_blank" rel="noreferrer">{ video.VideoTitle }</a>
 			if video.FilteredReason != "" {
-				<p class="mt-2 text-sm text-amber-200">Filtered reason: { video.FilteredReason }</p>
+				<div class="text-sm text-neutral-700">Filtered reason: { video.FilteredReason }</div>
 			}
 			if video.Notes != "" {
-				<p class="mt-3 rounded-xl border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-300">{ video.Notes }</p>
+				<div class="text-sm text-neutral-700">Notes: { video.Notes }</div>
 			}
-		</div>
-		<div class="grid grid-cols-2 gap-2 text-sm lg:grid-cols-1">
-			<div class="rounded-xl bg-slate-950/70 p-3">
-				<div class="font-black text-slate-50">{ FormatCount(video.ViewCount) }</div>
-				<div class="text-xs uppercase tracking-wide text-slate-500">views</div>
-			</div>
-			<div class="rounded-xl bg-slate-950/70 p-3">
-				<div class="font-black text-slate-50">{ FormatCount(video.LikeCount) } / { FormatCount(video.CommentCount) }</div>
-				<div class="text-xs uppercase tracking-wide text-slate-500">likes / comments</div>
-			</div>
-			<div class="rounded-xl bg-slate-950/70 p-3">
-				<div class="font-black text-slate-50">{ FormatTime(video.PublishedAt) }</div>
-				<div class="text-xs uppercase tracking-wide text-slate-500">published</div>
-			</div>
-			<div class="rounded-xl bg-slate-950/70 p-3">
-				<div class="font-black text-slate-50">{ FormatTime(video.LastSeenAt) }</div>
-				<div class="text-xs uppercase tracking-wide text-slate-500">last seen</div>
-			</div>
-		</div>
-	</article>
+		</td>
+		<td class="border-r border-black px-3 py-2"><strong>{ FormatCount(video.ViewCount) }</strong></td>
+		<td class="border-r border-black px-3 py-2">{ FormatCount(video.LikeCount) } / { FormatCount(video.CommentCount) }</td>
+		<td class="border-r border-black px-3 py-2">{ video.Format }</td>
+		<td class="border-r border-black px-3 py-2">{ video.Language }</td>
+		<td class="border-r border-black px-3 py-2">{ FormatTime(video.PublishedAt) }</td>
+		<td class="px-3 py-2 text-neutral-700">{ FormatTime(video.LastSeenAt) }</td>
+	</tr>
 }

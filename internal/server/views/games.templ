@@ -2,45 +2,56 @@ package views
 
 templ GamesPage(data GamesPageData) {
 	@Layout("Games") {
-		<section class="page-head">
+		<section class="mb-6 flex flex-col gap-2 border-b-2 border-black pb-4 md:flex-row md:items-end md:justify-between">
 			<div>
-				<p class="eyebrow"></p>
-				<h1>Games</h1>
-				<p class="muted">Create a game record, then run YouTube searches against it.</p>
+				<p class="text-xs font-black uppercase tracking-[0.18em] text-black">Tracker</p>
+				<h1 class="mt-1 text-5xl font-black uppercase leading-none tracking-tight text-black md:text-7xl">Games</h1>
+				<p class="mt-2 max-w-2xl text-sm font-medium text-neutral-700">Create a game record, then run YouTube searches against it.</p>
 			</div>
 		</section>
 		@Alert("error", data.Error)
-		<section class="panel split-panel">
+		<section class="mb-4 border-2 border-black bg-white p-4">
 			<div>
-				<h2>Add game</h2>
-				<form class="inline-form" data-on:submit="@post('/games', {contentType: 'form'})">
-					<label>
-						<span>Game name</span>
-						<input name="name" required placeholder="Elden Ring"/>
+				<h2 class="mb-3 text-xl font-black uppercase text-black">Add game</h2>
+				<form class="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end" data-on:submit="@post('/games', {contentType: 'form'})">
+					<label class="block">
+						<span class="mb-1 block text-xs font-black uppercase tracking-wide text-black">Game name</span>
+						<input class="w-full border-2 border-black bg-white px-3 py-2 text-black placeholder:text-neutral-500" name="name" required placeholder="Elden Ring"/>
 					</label>
-					<button class="text-sm" type="submit">Add game</button>
+					<button class="border-2 border-black bg-black px-4 py-2 text-sm font-black uppercase text-white hover:bg-white hover:text-black" type="submit">Add game</button>
 				</form>
 			</div>
 		</section>
-		<section class="panel">
-			<h2>Games</h2>
+		<section class="border-2 border-black bg-white">
+			<div class="border-b-2 border-black px-4 py-3">
+				<h2 class="text-xl font-black uppercase text-black">Games</h2>
+			</div>
 			if len(data.Games) == 0 {
-				<p class="empty">No games tracked yet.</p>
+				<p class="p-4 text-sm font-medium text-neutral-700">No games tracked yet.</p>
 			} else {
-				<div class="divide-y divide-gray-200 space-y-4">
-					for _, game := range data.Games {
-						<a class="flex justify-between items-center pb-4" href={ GamePath(game.ID) }>
-							<div>
-								<h3>{ game.Name }</h3>
-								<p class="muted">{ FormatCount(game.ApprovedCount) } videos · last searched { FormatTime(game.LastSearchedAt) }</p>
-							</div>
-							<div class="flex gap-2 text-sm">
-								<span>{ FormatCount(game.CandidateCount) } candidate</span>
-								<span>{ FormatCount(game.ApprovedCount) } approved</span>
-								<span>{ FormatCount(game.ContactedCount) } contacted</span>
-							</div>
-						</a>
-					}
+				<div class="overflow-x-auto">
+					<table class="min-w-[760px] w-full border-collapse text-left text-sm text-black">
+						<thead>
+							<tr class="border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide">
+								<th class="px-4 py-3">Game</th>
+								<th class="px-4 py-3">Candidates</th>
+								<th class="px-4 py-3">Approved</th>
+								<th class="px-4 py-3">Contacted</th>
+								<th class="px-4 py-3">Last searched</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, game := range data.Games {
+								<tr class="border-b border-black last:border-b-0 hover:bg-yellow-100">
+									<td class="px-4 py-3 font-black"><a class="text-black underline decoration-2 underline-offset-4 hover:bg-black hover:text-white" href={ GamePath(game.ID) }>{ game.Name }</a></td>
+									<td class="px-4 py-3">{ FormatCount(game.CandidateCount) }</td>
+									<td class="px-4 py-3">{ FormatCount(game.ApprovedCount) }</td>
+									<td class="px-4 py-3">{ FormatCount(game.ContactedCount) }</td>
+									<td class="px-4 py-3 text-neutral-700">{ FormatTime(game.LastSearchedAt) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
 				</div>
 			}
 		</section>

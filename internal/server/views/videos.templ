@@ -5,14 +5,14 @@ import (
 )
 
 templ VideosSection(game storage.Game, videos []storage.GameVideo, filters VideoFilters) {
-	<section class="panel" id="videos-section">
-		<div class="section-head">
+	<section class="mb-4 border-2 border-black bg-white p-4" id="videos-section">
+		<div class="mb-4 flex items-end justify-between gap-4">
 			<div>
-				<h2>Videos</h2>
-				<p class="muted">Review candidates and move creators through your outreach workflow.</p>
+				<h2 class="mb-1 text-xl font-black uppercase text-black">Videos</h2>
+				<p class="text-sm font-medium text-neutral-700">Review candidates and move creators through your outreach workflow.</p>
 			</div>
 		</div>
-		<form class="filter-bar" data-on:change={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" } data-on:input__debounce.300ms={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" }>
+		<form class="mb-4 flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch" data-on:change={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" } data-on:input__debounce.300ms={ "@get('" + GameVideosPath(game.ID) + "', {contentType: 'form'})" }>
 			<label>
 				<span>Status</span>
 				<select name="status">
@@ -39,20 +39,20 @@ templ VideosSection(game storage.Game, videos []storage.GameVideo, filters Video
 			</label>
 		</form>
 		if len(videos) == 0 {
-			<p class="empty">No videos match these filters.</p>
+			<p class="text-sm font-medium text-neutral-700">No videos match these filters.</p>
 		} else {
-			<div class="table-wrap">
-				<table class="data-table">
+			<div class="overflow-x-auto">
+				<table class="min-w-[1080px] w-full border-collapse text-left text-sm text-black">
 					<thead>
-						<tr>
-							<th>Status</th>
-							<th>Creator</th>
-							<th>Video</th>
-							<th>Views</th>
-							<th>Format</th>
-							<th>Language</th>
-							<th>Published</th>
-							<th>Notes</th>
+						<tr class="border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide text-neutral-700">
+							<th class="border-r border-black px-3 py-2">Status</th>
+							<th class="border-r border-black px-3 py-2">Creator</th>
+							<th class="border-r border-black px-3 py-2">Video</th>
+							<th class="border-r border-black px-3 py-2">Views</th>
+							<th class="border-r border-black px-3 py-2">Format</th>
+							<th class="border-r border-black px-3 py-2">Language</th>
+							<th class="border-r border-black px-3 py-2">Published</th>
+							<th class="px-3 py-2">Notes</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -67,42 +67,40 @@ templ VideosSection(game storage.Game, videos []storage.GameVideo, filters Video
 }
 
 templ VideoRow(video storage.GameVideo) {
-	<tr id={ "video-row-" + video.VideoID }>
-		<td class="status-cell">
+	<tr class="border-b border-black last:border-b-0 hover:bg-yellow-100" id={ "video-row-" + video.VideoID }>
+		<td class="min-w-44 border-r border-black px-3 py-2 align-top">
 			@StatusBadge(video.Status)
-			<form class="status-actions" data-on:change={ "@post('" + VideoStatusPath(video.GameID, video.VideoID) + "', {contentType: 'form'})" }>
-				<select name="status">
-					<option value="candidate" selected?={ video.Status == "candidate" }>Candidate</option>
-					<option value="approved" selected?={ video.Status == "approved" }>Approved</option>
-					<option value="rejected" selected?={ video.Status == "rejected" }>Rejected</option>
-					<option value="contacted" selected?={ video.Status == "contacted" }>Contacted</option>
-					<option value="ignored" selected?={ video.Status == "ignored" }>Ignored</option>
-				</select>
+			<form class="mt-2 grid gap-1" data-on:submit={ "@post('" + VideoStatusPath(video.GameID, video.VideoID) + "', {contentType: 'form'})" }>
+				<button class="border border-black px-2 py-1 text-left text-xs font-black uppercase" type="submit" name="status" value="candidate">Candidate</button>
+				<button class="border border-black bg-green-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white" type="submit" name="status" value="approved">Approved</button>
+				<button class="border border-black bg-red-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white" type="submit" name="status" value="rejected">Rejected</button>
+				<button class="border border-black bg-blue-200 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white" type="submit" name="status" value="contacted">Contacted</button>
+				<button class="border border-black bg-neutral-300 px-2 py-1 text-left text-xs font-black uppercase text-black hover:bg-black hover:text-white" type="submit" name="status" value="ignored">Ignored</button>
 			</form>
 		</td>
-		<td>
+		<td class="border-r border-black px-3 py-2 align-top">
 			<a href={ CreatorPath(video.ChannelID) }>{ video.CreatorName }</a>
-			<div class="muted">{ FormatCount(video.SubscriberCount) } subscribers</div>
-			<a class="muted" href={ video.ChannelURL } target="_blank" rel="noreferrer">YouTube channel</a>
+			<div class="text-sm text-neutral-700">{ FormatCount(video.SubscriberCount) } subscribers</div>
+			<a class="text-sm text-neutral-700" href={ video.ChannelURL } target="_blank" rel="noreferrer">YouTube channel</a>
 		</td>
-		<td class="video-title">
+		<td class="max-w-[34rem] border-r border-black px-3 py-2 align-top">
 			<a href={ video.VideoURL } target="_blank" rel="noreferrer">{ video.VideoTitle }</a>
 			if video.FilteredReason != "" {
-				<div class="muted">Filtered reason: { video.FilteredReason }</div>
+				<div class="text-sm text-neutral-700">Filtered reason: { video.FilteredReason }</div>
 			}
 		</td>
-		<td>
+		<td class="border-r border-black px-3 py-2 align-top">
 			<strong>{ FormatCount(video.ViewCount) }</strong>
-			<div class="muted">{ FormatCount(video.LikeCount) } likes · { FormatCount(video.CommentCount) } comments</div>
+			<div class="text-sm text-neutral-700">{ FormatCount(video.LikeCount) } likes · { FormatCount(video.CommentCount) } comments</div>
 		</td>
-		<td>{ video.Format }</td>
-		<td>{ video.Language }</td>
-		<td>{ FormatTime(video.PublishedAt) }</td>
-		<td>
+		<td class="border-r border-black px-3 py-2 align-top">{ video.Format }</td>
+		<td class="border-r border-black px-3 py-2 align-top">{ video.Language }</td>
+		<td class="border-r border-black px-3 py-2 align-top">{ FormatTime(video.PublishedAt) }</td>
+		<td class="px-3 py-2 align-top">
 			<form data-on:change={ "@post('" + VideoNotesPath(video.GameID, video.VideoID) + "', {contentType: 'form'})" }>
 				<textarea name="notes" rows="2" placeholder="Add notes">{ video.Notes }</textarea>
 			</form>
-			<div class="muted">Seen { FormatTime(video.LastSeenAt) }</div>
+			<div class="text-sm text-neutral-700">Seen { FormatTime(video.LastSeenAt) }</div>
 		</td>
 	</tr>
 }

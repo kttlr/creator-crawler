@@ -13,32 +13,32 @@ templ GameDetailPage(data GameDetailData) {
 
 templ GameDetailContent(data GameDetailData) {
 	<div id="game-content">
-		<section class="page-head">
+		<section class="mb-6 flex justify-between border-b-2 border-black pb-4">
 			<div>
-				<a class="back-link" href="/games">← Games</a>
-				<p class="eyebrow">Game</p>
-				<h1>{ data.Game.Name }</h1>
+				<a class="mb-4 inline-block text-sm font-black uppercase" href="/games">← Games</a>
+				<p class="text-xs font-black uppercase tracking-[0.18em] text-black">Game</p>
+				<h1 class="mt-1 text-5xl font-black uppercase leading-none tracking-tight text-black md:text-7xl">{ data.Game.Name }</h1>
 			</div>
 		</section>
 		@Alert("success", data.Notice)
 		@Alert("error", data.Error)
-		<section class="panel">
-			<h2>Run YouTube search</h2>
-			<form class="search-form" data-on:submit={ "@post('" + GameSearchesPath(data.Game.ID) + "', {contentType: 'form'})" } data-indicator="searching">
+		<section class="mb-4 border-2 border-black bg-white p-4">
+			<h2 class="mb-4 text-xl font-black uppercase text-black">Run YouTube search</h2>
+			<form class="flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch" data-on:submit={ "@post('" + GameSearchesPath(data.Game.ID) + "', {contentType: 'form'})" } data-indicator="searching">
 				<label>
 					<span>Query</span>
 					<input name="query" value={ data.SearchForm.Query } placeholder={ data.Game.Name }/>
 				</label>
-				<label class="short-field">
+				<label class="w-32 max-md:w-full">
 					<span>Limit</span>
 					<input name="limit" type="number" min="1" max="500" value={ fmt.Sprint(data.SearchForm.Limit) }/>
 				</label>
-				<label class="check-field">
-					<input name="include_filtered" type="checkbox" checked?={ data.SearchForm.IncludeFiltered }/>
-					<span>Include likely official/media/trailer results</span>
+				<label class="flex min-w-80 items-center gap-2 max-md:min-w-0">
+					<input class="w-auto" name="include_filtered" type="checkbox" checked?={ data.SearchForm.IncludeFiltered }/>
+					<span class="mb-0 normal-case">Include likely official/media/trailer results</span>
 				</label>
 				<button type="submit">Run search</button>
-				<span class="muted" data-show="$searching">Searching YouTube…</span>
+				<span class="text-sm text-neutral-700" data-show="$searching">Searching YouTube…</span>
 			</form>
 		</section>
 		@VideosSection(data.Game, data.Videos, data.Filters)
@@ -47,41 +47,43 @@ templ GameDetailContent(data GameDetailData) {
 }
 
 templ SearchRunsSection(runs []storage.SearchRun) {
-	<section class="panel">
-		<h2>Recent searches</h2>
+	<section class="mb-4 border-2 border-black bg-white p-4">
+		<h2 class="mb-4 text-xl font-black uppercase text-black">Recent searches</h2>
 		if len(runs) == 0 {
-			<p class="empty">No searches run yet.</p>
+			<p class="text-sm font-medium text-neutral-700">No searches run yet.</p>
 		} else {
-			<table class="data-table compact">
+			<div class="overflow-x-auto">
+			<table class="w-full border-collapse text-left text-sm text-black">
 				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Query</th>
-						<th>Results</th>
-						<th>Limit</th>
-						<th>Filtered</th>
-						<th>Created</th>
+					<tr class="border-b-2 border-black bg-neutral-100 text-xs font-black uppercase tracking-wide text-neutral-700">
+						<th class="border-r border-black px-3 py-2">ID</th>
+						<th class="border-r border-black px-3 py-2">Query</th>
+						<th class="border-r border-black px-3 py-2">Results</th>
+						<th class="border-r border-black px-3 py-2">Limit</th>
+						<th class="border-r border-black px-3 py-2">Filtered</th>
+						<th class="px-3 py-2">Created</th>
 					</tr>
 				</thead>
 				<tbody>
 					for _, run := range runs {
-						<tr>
-							<td>{ fmt.Sprint(run.ID) }</td>
-							<td>{ run.Query }</td>
-							<td>{ FormatCount(run.ResultCount) }</td>
-							<td>{ FormatCount(run.LimitRequested) }</td>
-							<td>
+						<tr class="border-b border-black last:border-b-0 hover:bg-yellow-100">
+							<td class="border-r border-black px-3 py-2">{ fmt.Sprint(run.ID) }</td>
+							<td class="border-r border-black px-3 py-2">{ run.Query }</td>
+							<td class="border-r border-black px-3 py-2">{ FormatCount(run.ResultCount) }</td>
+							<td class="border-r border-black px-3 py-2">{ FormatCount(run.LimitRequested) }</td>
+							<td class="border-r border-black px-3 py-2">
 								if run.IncludeFiltered {
 									<span>included</span>
 								} else {
 									<span>excluded</span>
 								}
 							</td>
-							<td>{ FormatTime(run.CreatedAt) }</td>
+							<td class="px-3 py-2 text-neutral-700">{ FormatTime(run.CreatedAt) }</td>
 						</tr>
 					}
 				</tbody>
 			</table>
+			</div>
 		}
 	</section>
 }

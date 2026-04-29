@@ -8,18 +8,17 @@ templ Layout(title string) {
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<title>{ title } · Creator Crawler</title>
 			<link rel="stylesheet" href="/static/tailwind.css"/>
-			<link rel="stylesheet" href="/static/app.css"/>
 			<script type="module" src="/static/vendor/datastar.js"></script>
 		</head>
-		<body>
-			<header class="flex justify-between px-4 py-2">
-				<a class="brand" href="/games">Creator Crawler</a>
-				<nav class="flex gap-4">
+		<body class="bg-stone-100 text-black">
+			<aside class="fixed left-0 top-0 z-10 flex h-screen w-60 flex-col gap-8 border-r-2 border-black bg-white p-5 max-md:static max-md:h-auto max-md:w-auto max-md:border-r-0 max-md:border-b-2 max-md:gap-3">
+				<a class="block border-2 border-black p-3 font-black uppercase tracking-tight underline decoration-2 underline-offset-4 hover:bg-black hover:text-white" href="/games">Creator Crawler</a>
+				<nav class="flex flex-col gap-2 font-black uppercase max-md:flex-row max-md:flex-wrap">
 					<a href="/creators">Creators</a>
 					<a href="/games">Games</a>
 				</nav>
-			</header>
-			<main class="app-main">
+			</aside>
+			<main class="p-6 pl-[16.5rem] max-md:p-4">
 				{ children... }
 			</main>
 		</body>
@@ -28,10 +27,24 @@ templ Layout(title string) {
 
 templ Alert(kind string, message string) {
 	if message != "" {
-		<div class={ "alert alert-" + kind }>{ message }</div>
+		if kind == "error" {
+			<div class="mb-4 border-2 border-black bg-red-100 p-3 text-sm font-bold text-black">{ message }</div>
+		} else {
+			<div class="mb-4 border-2 border-black bg-green-100 p-3 text-sm font-bold text-black">{ message }</div>
+		}
 	}
 }
 
 templ StatusBadge(status string) {
-	<span class={ "status status-" + StatusLabel(status) }>{ StatusLabel(status) }</span>
+	if StatusLabel(status) == "candidate" {
+		<span class="inline-block border border-black bg-yellow-200 px-2 py-1 text-xs font-black uppercase text-black">candidate</span>
+	} else if StatusLabel(status) == "approved" {
+		<span class="inline-block border border-black bg-green-200 px-2 py-1 text-xs font-black uppercase text-black">approved</span>
+	} else if StatusLabel(status) == "rejected" {
+		<span class="inline-block border border-black bg-red-200 px-2 py-1 text-xs font-black uppercase text-black">rejected</span>
+	} else if StatusLabel(status) == "contacted" {
+		<span class="inline-block border border-black bg-blue-200 px-2 py-1 text-xs font-black uppercase text-black">contacted</span>
+	} else {
+		<span class="inline-block border border-black bg-neutral-300 px-2 py-1 text-xs font-black uppercase text-black">{ StatusLabel(status) }</span>
+	}
 }
