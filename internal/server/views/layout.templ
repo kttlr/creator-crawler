@@ -7,19 +7,22 @@ templ Layout(title string) {
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<title>{ title } · Creator Crawler</title>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href="/static/tailwind.css"/>
 			<script type="module" src="/static/vendor/datastar.js"></script>
 		</head>
-		<body class="bg-stone-100 text-neutral-950">
-			<aside class="fixed left-0 top-0 z-10 flex h-screen w-60 flex-col gap-8 border-r border-neutral-800 bg-stone-50 p-5 text-sm max-md:static max-md:h-auto max-md:w-auto max-md:border-r-0 max-md:border-b max-md:gap-3">
-				<a class="block rounded-sm border border-neutral-800 p-3 font-black uppercase tracking-tight underline decoration-2 underline-offset-4 hover:bg-neutral-900 hover:text-stone-50" href="/">Creator Crawler</a>
-				<nav class="flex flex-col gap-2 font-black uppercase max-md:flex-row max-md:flex-wrap">
-					<a class="rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50" href="/my-games">My Games</a>
-					<a class="rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50" href="/creators">Creators</a>
-					<a class="rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50" href="/games">Games</a>
+		<body class="bg-stone-50 text-stone-900">
+			<aside class="app-sidebar">
+				<a class="brand-card" href="/" aria-label="Creator Crawler home"><span>Creator</span><span>Crawler</span></a>
+				<nav class="app-nav" aria-label="Primary navigation">
+					<a href="/my-games">My Games</a>
+					<a href="/creators">Creators</a>
+					<a href="/games">Games</a>
 				</nav>
 			</aside>
-			<main class="p-6 pl-[16.5rem] max-md:p-4">
+			<main class="p-6 pl-[17.5rem] max-md:p-4">
 				{ children... }
 			</main>
 		</body>
@@ -29,23 +32,23 @@ templ Layout(title string) {
 templ Alert(kind string, message string) {
 	if message != "" {
 		if kind == "error" {
-			<div class="mb-4 rounded-sm border border-neutral-800 bg-red-50 p-3 text-sm font-bold text-neutral-950">{ message }</div>
+			<div class="mb-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm font-bold text-slate-900 shadow-sm">{ message }</div>
 		} else {
-			<div class="mb-4 rounded-sm border border-neutral-800 bg-green-50 p-3 text-sm font-bold text-neutral-950">{ message }</div>
+			<div class="mb-4 rounded-sm border border-emerald-300 bg-emerald-50 p-3 text-sm font-bold text-slate-900 shadow-sm">{ message }</div>
 		}
 	}
 }
 
 templ StatusBadge(status string) {
 	if StatusLabel(status) == "candidate" {
-		<span class="inline-block rounded-sm border border-neutral-700 bg-yellow-100 px-2 py-1 text-xs font-black uppercase text-neutral-950">candidate</span>
+		<span class="inline-block rounded-sm border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-black uppercase text-slate-800">candidate</span>
 	} else if StatusLabel(status) == "approved" {
-		<span class="inline-block rounded-sm border border-neutral-700 bg-green-100 px-2 py-1 text-xs font-black uppercase text-neutral-950">approved</span>
+		<span class="inline-block rounded-sm border border-emerald-300 bg-emerald-50 px-2 py-1 text-xs font-black uppercase text-slate-800">approved</span>
 	} else if StatusLabel(status) == "rejected" {
-		<span class="inline-block rounded-sm border border-neutral-700 bg-red-100 px-2 py-1 text-xs font-black uppercase text-neutral-950">rejected</span>
+		<span class="inline-block rounded-sm border border-red-300 bg-red-50 px-2 py-1 text-xs font-black uppercase text-slate-800">rejected</span>
 	} else if StatusLabel(status) == "contacted" {
-		<span class="inline-block rounded-sm border border-neutral-700 bg-blue-100 px-2 py-1 text-xs font-black uppercase text-neutral-950">contacted</span>
+		<span class="inline-block rounded-sm border border-sky-300 bg-sky-50 px-2 py-1 text-xs font-black uppercase text-slate-800">contacted</span>
 	} else {
-		<span class="inline-block rounded-sm border border-neutral-700 bg-neutral-200 px-2 py-1 text-xs font-black uppercase text-neutral-950">{ StatusLabel(status) }</span>
+		<span class="inline-block rounded-sm border border-slate-300 bg-slate-100 px-2 py-1 text-xs font-black uppercase text-slate-800">{ StatusLabel(status) }</span>
 	}
 }

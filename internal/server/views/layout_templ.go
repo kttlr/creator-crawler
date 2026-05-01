@@ -42,7 +42,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " · Creator Crawler</title><link rel=\"stylesheet\" href=\"/static/tailwind.css\"><script type=\"module\" src=\"/static/vendor/datastar.js\"></script></head><body class=\"bg-stone-100 text-neutral-950\"><aside class=\"fixed left-0 top-0 z-10 flex h-screen w-60 flex-col gap-8 border-r border-neutral-800 bg-stone-50 p-5 text-sm max-md:static max-md:h-auto max-md:w-auto max-md:border-r-0 max-md:border-b max-md:gap-3\"><a class=\"block rounded-sm border border-neutral-800 p-3 font-black uppercase tracking-tight underline decoration-2 underline-offset-4 hover:bg-neutral-900 hover:text-stone-50\" href=\"/\">Creator Crawler</a><nav class=\"flex flex-col gap-2 font-black uppercase max-md:flex-row max-md:flex-wrap\"><a class=\"rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50\" href=\"/my-games\">My Games</a> <a class=\"rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50\" href=\"/creators\">Creators</a> <a class=\"rounded-sm border border-neutral-800 bg-stone-50 px-3 py-2 hover:bg-neutral-900 hover:text-stone-50\" href=\"/games\">Games</a></nav></aside><main class=\"p-6 pl-[16.5rem] max-md:p-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " · Creator Crawler</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link href=\"https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/tailwind.css\"><script type=\"module\" src=\"/static/vendor/datastar.js\"></script></head><body class=\"bg-stone-50 text-stone-900\"><aside class=\"app-sidebar\"><a class=\"brand-card\" href=\"/\" aria-label=\"Creator Crawler home\"><span>Creator</span><span>Crawler</span></a><nav class=\"app-nav\" aria-label=\"Primary navigation\"><a href=\"/my-games\">My Games</a> <a href=\"/creators\">Creators</a> <a href=\"/games\">Games</a></nav></aside><main class=\"p-6 pl-[17.5rem] max-md:p-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -81,14 +81,14 @@ func Alert(kind string, message string) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		if message != "" {
 			if kind == "error" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"mb-4 rounded-sm border border-neutral-800 bg-red-50 p-3 text-sm font-bold text-neutral-950\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"mb-4 rounded-sm border border-red-300 bg-red-50 p-3 text-sm font-bold text-slate-900 shadow-sm\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 32, Col: 116}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 35, Col: 120}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -99,14 +99,14 @@ func Alert(kind string, message string) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"mb-4 rounded-sm border border-neutral-800 bg-green-50 p-3 text-sm font-bold text-neutral-950\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"mb-4 rounded-sm border border-emerald-300 bg-emerald-50 p-3 text-sm font-bold text-slate-900 shadow-sm\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 34, Col: 118}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 37, Col: 128}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -144,34 +144,34 @@ func StatusBadge(status string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if StatusLabel(status) == "candidate" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<span class=\"inline-block rounded-sm border border-neutral-700 bg-yellow-100 px-2 py-1 text-xs font-black uppercase text-neutral-950\">candidate</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<span class=\"inline-block rounded-sm border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-black uppercase text-slate-800\">candidate</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else if StatusLabel(status) == "approved" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<span class=\"inline-block rounded-sm border border-neutral-700 bg-green-100 px-2 py-1 text-xs font-black uppercase text-neutral-950\">approved</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<span class=\"inline-block rounded-sm border border-emerald-300 bg-emerald-50 px-2 py-1 text-xs font-black uppercase text-slate-800\">approved</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else if StatusLabel(status) == "rejected" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<span class=\"inline-block rounded-sm border border-neutral-700 bg-red-100 px-2 py-1 text-xs font-black uppercase text-neutral-950\">rejected</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<span class=\"inline-block rounded-sm border border-red-300 bg-red-50 px-2 py-1 text-xs font-black uppercase text-slate-800\">rejected</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else if StatusLabel(status) == "contacted" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<span class=\"inline-block rounded-sm border border-neutral-700 bg-blue-100 px-2 py-1 text-xs font-black uppercase text-neutral-950\">contacted</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<span class=\"inline-block rounded-sm border border-sky-300 bg-sky-50 px-2 py-1 text-xs font-black uppercase text-slate-800\">contacted</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<span class=\"inline-block rounded-sm border border-neutral-700 bg-neutral-200 px-2 py-1 text-xs font-black uppercase text-neutral-950\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<span class=\"inline-block rounded-sm border border-slate-300 bg-slate-100 px-2 py-1 text-xs font-black uppercase text-slate-800\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(StatusLabel(status))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 49, Col: 158}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/layout.templ`, Line: 52, Col: 152}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {

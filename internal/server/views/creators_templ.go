@@ -46,7 +46,7 @@ func CreatorsPage(data CreatorsPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex justify-between border-b border-neutral-800 pb-4\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-neutral-800\">Approved creators</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-neutral-950 md:text-7xl\">Creators</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-neutral-700\">Creators appear here after at least one video has been approved for a tracked game.</p></div></section><section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><form class=\"mb-4 flex flex-wrap items-end gap-3\" method=\"get\" action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex justify-between border-b border-slate-300 pb-4\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Approved creators</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">Creators</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-slate-600\">Creators appear here after at least one video has been approved for a tracked game.</p></div></section><section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><form class=\"mb-4 flex flex-wrap items-end gap-3\" method=\"get\" action=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -132,12 +132,12 @@ func CreatorsPage(data CreatorsPageData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"border-r border-stone-300 px-3 py-2\">Creator</th><th class=\"border-r border-stone-300 px-3 py-2\">Subscribers</th><th class=\"border-r border-stone-300 px-3 py-2\">Approved videos</th><th class=\"border-r border-stone-300 px-3 py-2\">Games</th><th class=\"border-r border-stone-300 px-3 py-2\">Views</th><th class=\"px-3 py-2\">Last seen</th></tr></thead> <tbody>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide text-slate-700\"><th class=\"border-r border-stone-300 px-3 py-2\">Creator</th><th class=\"border-r border-stone-300 px-3 py-2\">Subscribers</th><th class=\"border-r border-stone-300 px-3 py-2\">Approved videos</th><th class=\"border-r border-stone-300 px-3 py-2\">Games</th><th class=\"border-r border-stone-300 px-3 py-2\">Views</th><th class=\"px-3 py-2\">Last seen</th></tr></thead> <tbody>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, creator := range data.Creators {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"border-r border-stone-300 px-3 py-2\"><a href=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"border-r border-stone-300 px-3 py-2\"><a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -285,7 +285,7 @@ func CreatorDetailPage(data CreatorDetailData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<section class=\"mb-6 border-b border-neutral-800 pb-4\"><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<section class=\"mb-6 border-b border-slate-300 pb-4\"><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -298,14 +298,14 @@ func CreatorDetailPage(data CreatorDetailData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\">← Creators</a><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-neutral-800\">Creator</p><div><div><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-neutral-950 md:text-7xl\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\">← Creators</a><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Creator</p><div><div><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(data.Creator.CreatorName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/creators.templ`, Line: 77, Col: 136}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/creators.templ`, Line: 77, Col: 134}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -412,7 +412,7 @@ func CreatorDetailPage(data CreatorDetailData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, " approved views</span></div></div></div></div></section><section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Contact info</h2><form class=\"flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch\" method=\"post\" action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, " approved views</span></div></div></div></div></section><section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Contact info</h2><form class=\"flex flex-wrap items-end gap-3 max-md:flex-col max-md:items-stretch\" method=\"post\" action=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -443,7 +443,7 @@ func CreatorDetailPage(data CreatorDetailData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if len(data.Games) == 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><p class=\"text-sm font-medium text-neutral-700\">No tracked game videos are attached to this creator yet.</p></section>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><p class=\"text-sm font-medium text-neutral-700\">No tracked game videos are attached to this creator yet.</p></section>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -494,7 +494,7 @@ func CreatorGameSection(game CreatorGameGroup) templ.Component {
 			templ_7745c5c3_Var25 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><div class=\"mb-4 flex items-end justify-between gap-4\"><div><h2 class=\"mb-1 text-xl font-black uppercase text-neutral-950\"><a href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><div class=\"mb-4 flex items-end justify-between gap-4\"><div><h2 class=\"mb-1 text-xl font-black uppercase text-neutral-950\"><a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -533,7 +533,7 @@ func CreatorGameSection(game CreatorGameGroup) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, " videos from this creator</p></div></div><div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"border-r border-stone-300 px-3 py-2\">Status</th><th class=\"border-r border-stone-300 px-3 py-2\">Video</th><th class=\"border-r border-stone-300 px-3 py-2\">Views</th><th class=\"border-r border-stone-300 px-3 py-2\">Likes / comments</th><th class=\"border-r border-stone-300 px-3 py-2\">Format</th><th class=\"border-r border-stone-300 px-3 py-2\">Language</th><th class=\"border-r border-stone-300 px-3 py-2\">Published</th><th class=\"px-3 py-2\">Last seen</th></tr></thead> <tbody>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, " videos from this creator</p></div></div><div class=\"overflow-x-auto\"><table class=\"min-w-[1080px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide text-slate-700\"><th class=\"border-r border-stone-300 px-3 py-2\">Status</th><th class=\"border-r border-stone-300 px-3 py-2\">Video</th><th class=\"border-r border-stone-300 px-3 py-2\">Views</th><th class=\"border-r border-stone-300 px-3 py-2\">Likes / comments</th><th class=\"border-r border-stone-300 px-3 py-2\">Format</th><th class=\"border-r border-stone-300 px-3 py-2\">Language</th><th class=\"border-r border-stone-300 px-3 py-2\">Published</th><th class=\"px-3 py-2\">Last seen</th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -572,7 +572,7 @@ func CreatorVideoRow(video storage.CreatorVideo) templ.Component {
 			templ_7745c5c3_Var29 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"border-r border-stone-300 px-3 py-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"border-r border-stone-300 px-3 py-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

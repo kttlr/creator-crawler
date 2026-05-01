@@ -41,7 +41,7 @@ func GamesPage(data GamesPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex flex-col gap-2 border-b border-neutral-800 pb-4 md:flex-row md:items-end md:justify-between\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-neutral-800\">Tracker</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-neutral-950 md:text-7xl\">Games</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-neutral-700\">Create a game record, then run YouTube searches against it.</p></div></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex flex-col gap-2 border-b border-slate-300 pb-4 md:flex-row md:items-end md:justify-between\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Tracker</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">Games</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-slate-600\">Create a game record, then run YouTube searches against it.</p></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -49,7 +49,7 @@ func GamesPage(data GamesPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><div><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Add game</h2><form class=\"grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label class=\"block\"><span class=\"mb-1 block text-xs font-black uppercase tracking-wide text-neutral-700\">Game name</span> <input name=\"name\" required placeholder=\"Elden Ring\"></label> <button class=\"text-sm\" type=\"submit\">Add game</button></form></div></section><section class=\"rounded-sm border border-neutral-800 bg-stone-50 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><div class=\"border-b border-neutral-800 px-4 py-3\"><h2 class=\"text-xl font-black uppercase text-neutral-950\">Games</h2></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><div><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Add game</h2><form class=\"grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" data-on:submit=\"@post('/games', {contentType: 'form'})\"><label class=\"block\"><span class=\"mb-1 block text-xs font-black uppercase tracking-wide text-neutral-700\">Game name</span> <input name=\"name\" required placeholder=\"Elden Ring\"></label> <button class=\"text-sm\" type=\"submit\">Add game</button></form></div></section><section class=\"rounded-sm border border-slate-300 bg-white shadow-[0_2px_0_rgb(203_213_225)]\"><div class=\"border-b border-slate-300 bg-sky-100 px-4 py-3\"><h2 class=\"text-xl font-black uppercase text-neutral-950\">Games</h2></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -59,12 +59,12 @@ func GamesPage(data GamesPageData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"overflow-x-auto\"><table class=\"min-w-[760px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide\"><th class=\"px-4 py-3\">Game</th><th class=\"px-4 py-3\">Candidates</th><th class=\"px-4 py-3\">Approved</th><th class=\"px-4 py-3\">Contacted</th><th class=\"px-4 py-3\">Last searched</th></tr></thead> <tbody>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"overflow-x-auto\"><table class=\"min-w-[760px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide\"><th class=\"px-4 py-3\">Game</th><th class=\"px-4 py-3\">Candidates</th><th class=\"px-4 py-3\">Approved</th><th class=\"px-4 py-3\">Contacted</th><th class=\"px-4 py-3\">Last searched</th></tr></thead> <tbody>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, game := range data.Games {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"px-4 py-3 font-black\"><a href=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"px-4 py-3 font-black\"><a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

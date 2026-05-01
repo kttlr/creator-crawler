@@ -46,7 +46,7 @@ func MyGamesPage(data MyGamesPageData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex flex-col gap-2 border-b border-neutral-800 pb-4 md:flex-row md:items-end md:justify-between\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-neutral-800\">Portfolio</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-neutral-950 md:text-7xl\">My Games</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-neutral-700\">Save your own games, tag them, and connect them to similar tracked games and creators.</p></div></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"mb-6 flex flex-col gap-2 border-b border-slate-300 pb-4 md:flex-row md:items-end md:justify-between\"><div><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Portfolio</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">My Games</h1><p class=\"mt-2 max-w-2xl text-sm font-medium text-slate-600\">Save your own games, tag them, and connect them to similar tracked games and creators.</p></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -54,7 +54,7 @@ func MyGamesPage(data MyGamesPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"mb-4 rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Add my game</h2><form class=\"grid gap-3\" method=\"post\" action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " <section class=\"mb-4 rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Add my game</h2><form class=\"grid gap-3\" method=\"post\" action=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -67,7 +67,7 @@ func MyGamesPage(data MyGamesPageData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><div class=\"grid gap-3 md:grid-cols-2\"><label><span>Name</span> <input name=\"name\" required placeholder=\"My Deckbuilder\"></label> <label><span>Tags</span> <input name=\"tags\" placeholder=\"Roguelike, Deckbuilder, Pixel Art\"></label></div><label><span>Description</span> <textarea name=\"description\" rows=\"3\" placeholder=\"Short positioning notes\"></textarea></label> <label><span>Notes</span> <textarea name=\"notes\" rows=\"3\" placeholder=\"Marketing notes, creator fit, launch window\"></textarea></label><div><button type=\"submit\">Add my game</button></div></form></section><section class=\"rounded-sm border border-neutral-800 bg-stone-50 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><div class=\"border-b border-neutral-800 px-4 py-3\"><h2 class=\"text-xl font-black uppercase text-neutral-950\">Saved games</h2></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><div class=\"grid gap-3 md:grid-cols-2\"><label><span>Name</span> <input name=\"name\" required placeholder=\"My Deckbuilder\"></label> <label><span>Tags</span> <input name=\"tags\" placeholder=\"Roguelike, Deckbuilder, Pixel Art\"></label></div><label><span>Description</span> <textarea name=\"description\" rows=\"3\" placeholder=\"Short positioning notes\"></textarea></label> <label><span>Notes</span> <textarea name=\"notes\" rows=\"3\" placeholder=\"Marketing notes, creator fit, launch window\"></textarea></label><div><button type=\"submit\">Add my game</button></div></form></section><section class=\"rounded-sm border border-slate-300 bg-white shadow-[0_2px_0_rgb(203_213_225)]\"><div class=\"border-b border-slate-300 bg-sky-100 px-4 py-3\"><h2 class=\"text-xl font-black uppercase text-neutral-950\">Saved games</h2></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -77,12 +77,12 @@ func MyGamesPage(data MyGamesPageData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"overflow-x-auto\"><table class=\"min-w-[760px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide\"><th class=\"px-4 py-3\">Game</th><th class=\"px-4 py-3\">Tags</th><th class=\"px-4 py-3\">Similar games</th><th class=\"px-4 py-3\">Creators</th><th class=\"px-4 py-3\">Updated</th></tr></thead> <tbody>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"overflow-x-auto\"><table class=\"min-w-[760px] w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide\"><th class=\"px-4 py-3\">Game</th><th class=\"px-4 py-3\">Tags</th><th class=\"px-4 py-3\">Similar games</th><th class=\"px-4 py-3\">Creators</th><th class=\"px-4 py-3\">Updated</th></tr></thead> <tbody>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, game := range data.MyGames {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"px-4 py-3 font-black\"><a href=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"px-4 py-3 font-black\"><a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -217,7 +217,7 @@ func MyGameDetailPage(data MyGameDetailData) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<section class=\"mb-6 border-b border-neutral-800 pb-4\"><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<section class=\"mb-6 border-b border-slate-300 pb-4\"><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -230,14 +230,14 @@ func MyGameDetailPage(data MyGameDetailData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">← My Games</a><p class=\"text-xs font-black uppercase tracking-[0.18em] text-neutral-800\">My game</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-neutral-950 md:text-7xl\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">← My Games</a><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">My game</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(data.MyGame.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/my_games.templ`, Line: 83, Col: 125}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/my_games.templ`, Line: 83, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -248,14 +248,14 @@ func MyGameDetailPage(data MyGameDetailData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if data.MyGame.Description != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<p class=\"mt-3 max-w-3xl text-sm font-medium text-neutral-700\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<p class=\"mt-3 max-w-3xl text-sm font-medium text-slate-600\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(data.MyGame.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/my_games.templ`, Line: 85, Col: 92}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/my_games.templ`, Line: 85, Col: 90}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 				if templ_7745c5c3_Err != nil {
@@ -282,7 +282,7 @@ func MyGameDetailPage(data MyGameDetailData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Profile</h2><form class=\"grid gap-3\" method=\"post\" action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, " <section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Profile</h2><form class=\"grid gap-3\" method=\"post\" action=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -334,7 +334,7 @@ func MyGameDetailPage(data MyGameDetailData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</textarea></label><div><button type=\"submit\">Save profile</button></div></form></div><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Tags</h2>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</textarea></label><div><button type=\"submit\">Save profile</button></div></form></div><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Tags</h2>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -466,7 +466,7 @@ func MyGameConnections(data MyGameDetailData) templ.Component {
 			templ_7745c5c3_Var23 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Similar tracked games</h2><form class=\"mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" method=\"post\" action=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Similar tracked games</h2><form class=\"mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" method=\"post\" action=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -523,7 +523,7 @@ func MyGameConnections(data MyGameDetailData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</div><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Suggested games</h2><p class=\"mb-3 text-sm font-medium text-neutral-700\">Ranked by shared tags.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</div><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Suggested games</h2><p class=\"mb-3 text-sm font-medium text-neutral-700\">Ranked by shared tags.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -531,7 +531,7 @@ func MyGameConnections(data MyGameDetailData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "</div></section><section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Associated creators</h2><form class=\"mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" method=\"post\" action=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "</div></section><section class=\"mb-4 grid gap-4 lg:grid-cols-2\"><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Associated creators</h2><form class=\"mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end\" method=\"post\" action=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -588,7 +588,7 @@ func MyGameConnections(data MyGameDetailData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</div><div class=\"rounded-sm border border-neutral-800 bg-stone-50 p-4 shadow-[2px_2px_0_rgba(38,38,38,0.18)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Suggested creators</h2><p class=\"mb-3 text-sm font-medium text-neutral-700\">Approved/contacted creators from tracked games sharing tags with your game.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</div><div class=\"rounded-sm border border-slate-300 bg-white p-4 shadow-[0_2px_0_rgb(203_213_225)]\"><h2 class=\"mb-3 text-xl font-black uppercase text-neutral-950\">Suggested creators</h2><p class=\"mb-3 text-sm font-medium text-neutral-700\">Approved/contacted creators from tracked games sharing tags with your game.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -631,12 +631,12 @@ func SimilarGameTable(myGameID int64, games []storage.MyGameSimilarGame, removab
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"px-3 py-2\">Game</th><th class=\"px-3 py-2\">Shared tags</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide text-slate-700\"><th class=\"px-3 py-2\">Game</th><th class=\"px-3 py-2\">Shared tags</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, game := range games {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -783,12 +783,12 @@ func CreatorConnectionTable(myGameID int64, creators []storage.MyGameCreator, re
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"px-3 py-2\">Creator</th><th class=\"px-3 py-2\">Email</th><th class=\"px-3 py-2\">Contacted</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide text-slate-700\"><th class=\"px-3 py-2\">Creator</th><th class=\"px-3 py-2\">Email</th><th class=\"px-3 py-2\">Contacted</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, creator := range creators {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -1001,12 +1001,12 @@ func SuggestedCreatorTable(myGameID int64, creators []storage.SuggestedCreator) 
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-neutral-800 bg-stone-200 text-xs font-black uppercase tracking-wide text-neutral-700\"><th class=\"px-3 py-2\">Creator</th><th class=\"px-3 py-2\">Email</th><th class=\"px-3 py-2\">Shared tags</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "<div class=\"overflow-x-auto\"><table class=\"w-full border-collapse text-left text-sm text-neutral-950\"><thead><tr class=\"border-b border-slate-300 bg-slate-100 text-xs font-black uppercase tracking-wide text-slate-700\"><th class=\"px-3 py-2\">Creator</th><th class=\"px-3 py-2\">Email</th><th class=\"px-3 py-2\">Shared tags</th><th class=\"px-3 py-2\">Approved</th><th class=\"px-3 py-2\">Action</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, creator := range creators {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 90, "<tr class=\"border-b border-stone-300 last:border-b-0 hover:bg-amber-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 90, "<tr class=\"border-b border-slate-200 last:border-b-0 hover:bg-sky-50\"><td class=\"px-3 py-2 font-black\"><a href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
