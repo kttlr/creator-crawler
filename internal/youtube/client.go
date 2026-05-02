@@ -16,6 +16,8 @@ import (
 
 const apiBase = "https://www.googleapis.com/youtube/v3"
 
+type ProgressFunc func(percent int, message string)
+
 type Client struct {
 	apiKey     string
 	httpClient *http.Client
@@ -29,29 +31,38 @@ func NewClient(apiKey string) *Client {
 }
 
 func (c *Client) Search(ctx context.Context, query string, limit int, includeFiltered bool) ([]model.Result, error) {
+	return c.SearchWithProgress(ctx, query, limit, includeFiltered, nil)
+}
+
+func (c *Client) SearchWithProgress(ctx context.Context, query string, limit int, includeFiltered bool, progress ProgressFunc) ([]model.Result, error) {
 	if limit <= 0 {
 		limit = 100
 	}
 
+	report(progress, 5, "Searching YouTube…")
 	videoIDs, err := c.searchVideoIDs(ctx, query, limit)
 	if err != nil {
 		return nil, err
 	}
 	if len(videoIDs) == 0 {
+		report(progress, 100, "No videos found.")
 		return nil, nil
 	}
 
+	report(progress, 35, "Fetching video details…")
 	videos, err := c.fetchVideos(ctx, videoIDs)
 	if err != nil {
 		return nil, err
 	}
 
+	report(progress, 70, "Fetching channel stats…")
 	channelIDs := uniqueChannelIDs(videos)
 	channels, err := c.fetchChannels(ctx, channelIDs)
 	if err != nil {
 		return nil, err
 	}
 
+	report(progress, 85, "Filtering and ranking results…")
 	results := make([]model.Result, 0, len(videos))
 	for _, video := range videos {
 		channel := channels[video.Snippet.ChannelID]
@@ -91,7 +102,14 @@ func (c *Client) Search(ctx context.Context, query string, limit int, includeFil
 		return results[i].ViewCount > results[j].ViewCount
 	})
 
+	report(progress, 90, "Preparing results…")
 	return results, nil
+}
+
+func report(progress ProgressFunc, percent int, message string) {
+	if progress != nil {
+		progress(percent, message)
+	}
 }
 
 func (c *Client) searchVideoIDs(ctx context.Context, query string, limit int) ([]string, error) {

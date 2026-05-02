@@ -81,7 +81,7 @@ func GameDetailContent(data GameDetailData) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"game-content\"><section class=\"mb-6 flex justify-between border-b border-slate-300 pb-4\"><div><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"/games\">← Games</a><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Game</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"game-content\" data-signals='{\"youtubeSearch\":{\"active\":false,\"percent\":0,\"message\":\"\"}}'><section class=\"mb-6 flex justify-between border-b border-slate-300 pb-4\"><div><a class=\"mb-4 inline-block text-sm font-black uppercase\" href=\"/games\">← Games</a><p class=\"text-xs font-black uppercase tracking-[0.18em] text-sky-700\">Game</p><h1 class=\"mt-1 text-5xl font-black uppercase leading-none tracking-tight text-slate-900 md:text-7xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -202,7 +202,7 @@ func GameDetailContent(data GameDetailData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "> <span class=\"mb-0 normal-case\">Include likely official/media/trailer results</span></label> <button type=\"submit\">Run search</button> <span class=\"text-sm text-neutral-700\" data-show=\"$searching\">Searching YouTube…</span></form></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "> <span class=\"mb-0 normal-case\">Include likely official/media/trailer results</span></label> <button type=\"submit\" data-attr:disabled=\"$youtubeSearch.active\">Run search</button> <span class=\"text-sm text-neutral-700\" data-show=\"$searching && !$youtubeSearch.active\">Searching YouTube…</span></form><div class=\"mt-4 rounded-sm border border-sky-200 bg-sky-50 p-3\" data-show=\"$youtubeSearch.active\"><div class=\"mb-2 flex items-center justify-between gap-3 text-sm font-bold text-sky-900\"><span data-text=\"$youtubeSearch.message\">Searching YouTube…</span> <span data-text=\"$youtubeSearch.percent + '%'\">0%</span></div><div class=\"h-3 w-full overflow-hidden border border-sky-200 bg-sky-100\"><div class=\"h-full bg-sky-600 transition-[width] duration-500 ease-out\" data-style:width=\"$youtubeSearch.percent + '%'\"></div></div></div></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -265,7 +265,7 @@ func SearchRunsSection(runs []storage.SearchRun) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(run.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 83, Col: 75}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 92, Col: 75}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -278,7 +278,7 @@ func SearchRunsSection(runs []storage.SearchRun) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(run.Query)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 84, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 93, Col: 66}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
@@ -291,7 +291,7 @@ func SearchRunsSection(runs []storage.SearchRun) templ.Component {
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(run.ResultCount))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 85, Col: 85}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 94, Col: 85}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 				if templ_7745c5c3_Err != nil {
@@ -304,7 +304,7 @@ func SearchRunsSection(runs []storage.SearchRun) templ.Component {
 				var templ_7745c5c3_Var15 string
 				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(FormatCount(run.LimitRequested))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 86, Col: 88}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 95, Col: 88}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 				if templ_7745c5c3_Err != nil {
@@ -332,7 +332,7 @@ func SearchRunsSection(runs []storage.SearchRun) templ.Component {
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(FormatTime(run.CreatedAt))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 94, Col: 73}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/server/views/game_detail.templ`, Line: 103, Col: 73}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {

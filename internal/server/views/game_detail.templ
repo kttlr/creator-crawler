@@ -12,7 +12,7 @@ templ GameDetailPage(data GameDetailData) {
 }
 
 templ GameDetailContent(data GameDetailData) {
-	<div id="game-content">
+	<div id="game-content" data-signals='{"youtubeSearch":{"active":false,"percent":0,"message":""}}'>
 		<section class="mb-6 flex justify-between border-b border-slate-300 pb-4">
 			<div>
 				<a class="mb-4 inline-block text-sm font-black uppercase" href="/games">← Games</a>
@@ -50,9 +50,18 @@ templ GameDetailContent(data GameDetailData) {
 					<input class="w-auto" name="include_filtered" type="checkbox" checked?={ data.SearchForm.IncludeFiltered }/>
 					<span class="mb-0 normal-case">Include likely official/media/trailer results</span>
 				</label>
-				<button type="submit">Run search</button>
-				<span class="text-sm text-neutral-700" data-show="$searching">Searching YouTube…</span>
+				<button type="submit" data-attr:disabled="$youtubeSearch.active">Run search</button>
+				<span class="text-sm text-neutral-700" data-show="$searching && !$youtubeSearch.active">Searching YouTube…</span>
 			</form>
+			<div class="mt-4 rounded-sm border border-sky-200 bg-sky-50 p-3" data-show="$youtubeSearch.active">
+				<div class="mb-2 flex items-center justify-between gap-3 text-sm font-bold text-sky-900">
+					<span data-text="$youtubeSearch.message">Searching YouTube…</span>
+					<span data-text="$youtubeSearch.percent + '%'">0%</span>
+				</div>
+				<div class="h-3 w-full overflow-hidden border border-sky-200 bg-sky-100">
+					<div class="h-full bg-sky-600 transition-[width] duration-500 ease-out" data-style:width="$youtubeSearch.percent + '%'"></div>
+				</div>
+			</div>
 		</section>
 		@VideosSection(data.Game, data.Videos, data.Filters)
 		@SearchRunsSection(data.Runs)

@@ -1,10 +1,12 @@
 # Creator Crawler
 
-Creator Crawler is a local Go app for finding YouTube creators who have made videos about a game. It searches YouTube, fetches video and channel statistics, lightly filters obvious official/media/trailer results, and stores results in SQLite.
+> Disclaimer: Codex was used to help create this project, but it was not "vibe-coded".
+
+A local Go app for finding YouTube creators who have covered specific games. It searches YouTube, pulls video/channel stats, filters obvious official/media/trailer results, and stores everything in SQLite.
 
 ## Setup
 
-Create a YouTube Data API v3 key in Google Cloud Console, then add it to `.env`:
+Create a YouTube Data API v3 key, then copy the env file and add it:
 
 ```bash
 cp .env.example .env
@@ -14,139 +16,77 @@ cp .env.example .env
 YOUTUBE_API_KEY=your_api_key_here
 ```
 
-## Usage
-
-Start the local web UI:
+## Run the web UI
 
 ```bash
 go run . serve
 ```
 
-Open:
+Open `http://localhost:8080`.
 
-```text
-http://localhost:8080
-```
+The app uses a local SQLite database at `data/creator-crawler.db` by default. A YouTube API key is only needed when running searches.
 
-The web UI is served from the local Go binary and uses your local SQLite database. It does not require `YOUTUBE_API_KEY` until you run a YouTube search.
-
-## CLI Usage
-
-Add a game before searching:
+## CLI basics
 
 ```bash
+# add a game
 go run . game add "Elden Ring"
-```
 
-List tracked games:
-
-```bash
+# list games
 go run . game list
-```
 
-Search YouTube for an existing game. The default query is the game name:
-
-```bash
+# search YouTube for creators/videos
 go run . search --game "Elden Ring" --limit 100
-```
 
-Use a different YouTube query while still tying results to the game:
-
-```bash
+# use a custom query for that game
 go run . search --game "Elden Ring" --query "Elden Ring gameplay" --limit 100
-```
 
-By default, likely official/media/trailer rows are excluded. To include them with a `filtered_reason` value:
-
-```bash
+# include results normally filtered out as official/media/trailers
 go run . search --game "Elden Ring" --include-filtered
+
+# use a custom database
+go run . serve --db data/custom.db
 ```
 
-The default SQLite database path is:
+Searches only work for games you have already added.
 
-```text
-data/creator-crawler.db
-```
+## What it stores
 
-Use a custom database path:
+The SQLite database tracks:
 
-```bash
-go run . search --game "Elden Ring" --db data/custom.db
-```
+- your games and tracked games
+- tags and similar-game links
+- YouTube search runs
+- creators/channels
+- videos and per-game video matches
+- contacted/approved creator status for your own games
 
-Serve the web UI from a custom address or database:
-
-```bash
-go run . serve --addr localhost:8081 --db data/custom.db
-```
-
-## Data Model
-
-The SQLite database stores:
-
-- `my_games`: your own games for marketing research.
-- `tags`: reusable Steam-style tags shared across your games and tracked games.
-- `my_game_tags`: tags attached to your own games.
-- `game_tags`: tags attached to tracked games.
-- `my_game_similar_games`: explicit many-to-many links from your games to similar tracked games.
-- `my_game_creators`: explicit many-to-many links from your games to creators, including per-game contacted status.
-- `games`: games you explicitly choose to track.
-- `search_runs`: each YouTube API search tied to a game.
-- `creators`: YouTube channels, with optional saved email addresses.
-- `videos`: YouTube videos, deduped globally by video ID.
-- `search_results`: videos returned for a specific search run.
-- `game_videos`: candidate videos associated with a game.
-
-The My Games view suggests similar tracked games by shared tags and suggests creators from approved/contacted videos on games with matching tags.
-
-Searches do not create games automatically. If a game does not exist, the CLI fails with a message showing the `game add` command to run.
+The My Games view can suggest similar tracked games by shared tags and suggest creators from approved/contacted videos on matching games.
 
 ## Notes
 
-- The app binds the web UI to `localhost:8080` by default.
-- Datastar is vendored locally in `static/vendor/`, so the UI does not need a CDN at runtime.
-- Search uses the exact query you provide, or the game name if `--query` is omitted.
-- YouTube does not expose a reliable public “tagged game” search field like Twitch categories.
-- Language is left blank when YouTube does not provide language metadata.
-- Shorts are inferred from duration of 60 seconds or less.
-- The `duration` field uses YouTube's ISO 8601 duration format.
+- Web UI binds to `localhost:8080` by default.
+- Datastar is vendored in `static/vendor/`, so the UI does not need a CDN.
+- YouTube search uses your query exactly, or the game name if `--query` is omitted.
+- Shorts are inferred from videos 60 seconds or shorter.
+- Video durations are stored in YouTube's ISO 8601 format.
 
 ## Development
 
-The web UI uses `templ` components and Tailwind CSS v4. Generated `*_templ.go` files and compiled CSS are committed so users can build without installing extra tools.
+The UI uses `templ` and Tailwind CSS v4. Generated `*_templ.go` files and compiled CSS are committed.
 
-For frontend development with automatic templ generation, Tailwind rebuilds, Go server restarts, and browser live reload, run:
+For live development:
 
 ```bash
 just dev
 ```
 
-Open the live-reload proxy at:
+Open `http://localhost:8090` for the live-reload proxy. The app still runs on `http://localhost:8080`.
 
-```text
-http://localhost:8090
-```
-
-The underlying app still serves on `http://localhost:8080`.
-
-The first run installs local dev binaries into `.dev-bin/`.
-
-After editing `.templ` files, regenerate them with:
+Useful commands:
 
 ```bash
-go install github.com/a-h/templ/cmd/templ@latest
 templ generate
-```
-
-After editing Tailwind classes or `static/css/input.css`, rebuild CSS with:
-
-```bash
-pnpm install
 pnpm build:css
-```
-
-For iterative UI work, run:
-
-```bash
 pnpm watch:css
 ```

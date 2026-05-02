@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -310,6 +311,18 @@ func (s *Server) gameDetail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) createSearch(w http.ResponseWriter, r *http.Request) {
+	var sse *datastar.ServerSentEventGenerator
+
+	patchGameDetail := func(data views.GameDetailData) {
+		if sse != nil {
+			if err := sse.PatchElementTempl(views.GameDetailContent(data), datastar.WithSelectorID("game-content"), datastar.WithModeOuter()); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			return
+		}
+		s.patch(w, r, views.GameDetailContent(data), "game-content")
+	}
+
 	gameID, ok := s.pathInt(w, r, "id")
 	if !ok {
 		return
@@ -326,7 +339,7 @@ func (s *Server) createSearch(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		data, ok := s.loadGameDetail(w, r, "", err.Error())
 		if ok {
-			s.patch(w, r, views.GameDetailContent(data), "game-content")
+			patchGameDetail(data)
 		}
 		return
 	}
@@ -342,26 +355,40 @@ func (s *Server) createSearch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		data, ok := s.loadGameDetail(w, r, "", err.Error())
 		if ok {
-			s.patch(w, r, views.GameDetailContent(data), "game-content")
+			patchGameDetail(data)
 		}
 		return
+	}
+
+	// Create the Datastar SSE stream only after ParseForm/FormValue has read the
+	// request body. datastar.NewSSE reads and closes the body while loading
+	// signals, so doing it earlier makes net/http form parsing fail with
+	// "http: invalid Read on closed Body".
+	if isDatastar(r) {
+		sse = datastar.NewSSE(w, r)
 	}
 
 	client := youtube.NewClient(cfg.YouTubeAPIKey)
-	results, err := client.Search(r.Context(), query, limit, includeFiltered)
+	progress := func(percent int, message string) {
+		if sse != nil {
+			_ = patchSearchProgress(sse, true, percent, message)
+		}
+	}
+	results, err := client.SearchWithProgress(r.Context(), query, limit, includeFiltered, progress)
 	if err != nil {
 		data, ok := s.loadGameDetail(w, r, "", err.Error())
 		if ok {
-			s.patch(w, r, views.GameDetailContent(data), "game-content")
+			patchGameDetail(data)
 		}
 		return
 	}
 
+	progress(95, "Saving results…")
 	searchRunID, err := s.store.SaveSearchResults(r.Context(), game, query, limit, includeFiltered, results)
 	if err != nil {
 		data, ok := s.loadGameDetail(w, r, "", err.Error())
 		if ok {
-			s.patch(w, r, views.GameDetailContent(data), "game-content")
+			patchGameDetail(data)
 		}
 		return
 	}
@@ -372,7 +399,10 @@ func (s *Server) createSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data.SearchForm = views.SearchForm{Query: query, Limit: limit, IncludeFiltered: includeFiltered}
-	s.patch(w, r, views.GameDetailContent(data), "game-content")
+	if sse != nil {
+		_ = patchSearchProgress(sse, false, 100, "Done")
+	}
+	patchGameDetail(data)
 }
 
 func (s *Server) updateGameTags(w http.ResponseWriter, r *http.Request) {
@@ -626,6 +656,20 @@ func (s *Server) patch(w http.ResponseWriter, r *http.Request, component templ.C
 	if err := sse.PatchElementTempl(component, options...); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func patchSearchProgress(sse *datastar.ServerSentEventGenerator, active bool, percent int, message string) error {
+	payload, err := json.Marshal(map[string]any{
+		"youtubeSearch": map[string]any{
+			"active":  active,
+			"percent": percent,
+			"message": message,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	return sse.PatchSignals(payload)
 }
 
 func (s *Server) redirect(w http.ResponseWriter, r *http.Request, path string) {
